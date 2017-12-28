@@ -1,10 +1,10 @@
 <?php
-namespace Modules;
+namespace Modules\Foo;
 
 class FooModule
 {
-    public function __construct()
+    public function index()
     {
-        echo 'Im Triggered';
+        
     }
 }

@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Storage;
+
+use App\Services\Modules;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -39,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapModulesWebRoutes();
     }
 
     /**
@@ -69,5 +72,38 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Map module web defined route
+     * 
+     * follow the same rules applied to self::mapWebRoutes();
+     * 
+     * @return void
+     */
+    protected function mapModulesWebRoutes()
+    {
+        // make module class
+        $Modules    =   app()->make( Modules::class );
+
+        foreach( $Modules->getActives() as $module ) {
+
+            /**
+             * We might check if the module is active
+             */
+
+            // include module controllers
+            $controllers    =   Storage::disk( 'modules' )->files( $module[ 'controllers-relativePath' ] );
+            foreach( $controllers as $controller ) {
+                include_once( config( 'tendoo.modules_path' ) . '/' . $controller );
+            }
+
+            // if module has a web route file
+            if ( $module[ 'routes-file' ] ) {
+                Route::middleware( 'web' )
+                    ->namespace( 'Modules\\' . $module[ 'namespace' ] . '\Http\Controllers' )
+                    ->group( $module[ 'routes-file' ] );
+            }
+        }
     }
 }
