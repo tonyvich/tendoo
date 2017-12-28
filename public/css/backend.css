@@ -1,0 +1,54 @@
+#logo-wrapper {
+    width: 280px;
+}
+#sidebar-menu {
+    width: 280px;
+    padding-top: 56px;
+}
+#app-body {
+    padding-top: 56px;
+    width: 100%;
+}
+.app-body-container {
+    overflow-y: auto;
+    height: 100%;
+    box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,.12);
+}
+aside#sidebar-menu>ul .list-group-item > a {
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    width: 100%;
+    margin:0px;
+    padding: 0.8rem;
+}
+aside#sidebar-menu>ul {
+    border-top: 1px solid rgba(0,0,0,.12);
+}
+
+aside#sidebar-menu>ul .list-group-item:hover {
+    background: rgba(255, 255, 255, 0.27);
+}
+aside#sidebar-menu>ul .list-group-item:hover a {
+    text-decoration: none;
+}
+
+aside#sidebar-menu .list-group-item {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    padding: 0px;
+    line-height: 1;
+}
+aside#sidebar-menu .list-group-item :first-child {
+    margin-right: 0;
+}
+aside#sidebar-menu .sub-menu {
+    background: rgba(181, 180, 180, 0.12);
+}
+table.table .checkbox label .checkbox-decorator, table.table label.checkbox-inline .checkbox-decorator {
+    top: 0px;
+}
+
+.card-tabs {
+    box-shadow: inset 0px -3px 0px 0px #e0e0e0;
+    padding-bottom: 1px;
+}
