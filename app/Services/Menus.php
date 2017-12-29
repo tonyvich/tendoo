@@ -56,4 +56,44 @@ class Menus
             $menu->childrens[]   =   $menus;
         }
     }
+
+    /**
+     * Add menu before a specific namespace
+     * @param string namespace
+     * @param object menu namespace
+     * @return void
+     */
+    public function addBefore( $namespace, $menu )
+    {
+        $foundIndex     =   -1;
+        foreach( $this->menus as $index => $_menu ) {
+            if ( $_menu->namespace === $namespace ) {
+                $foundIndex     =   $index;
+            }
+        }
+
+        if ( $foundIndex != -1 ) {
+            $this->menus    =   array_insert_before( $this->menus, $foundIndex + 1, [ $menu ] );
+        }
+    }
+
+    /**
+     * Add menu after a specific namespace
+     * @param string namespace
+     * @param object menu namespace
+     * @return void
+     */
+    public function addAfter( $namespace, $menu )
+    {
+        $foundIndex     =   -1;
+        foreach( $this->menus as $index => $_menu ) {
+            if ( $_menu->namespace === $namespace ) {
+                $foundIndex     =   $index;
+            }
+        }
+
+        if ( $foundIndex != -1 ) {
+            $this->menus    =   array_insert_after( $this->menus, $foundIndex, [ $menu ] );
+        }
+    }
 }

@@ -52,6 +52,7 @@ class Modules
                     $config[ 'controllers-path' ]           =   $moduleBasePath . 'Http\Controllers';
                     $config[ 'controllers-relativePath' ]   =   ucwords( $config[ 'namespace' ] ) . '\Http\Controllers';
                     $config[ 'views-path' ]                 =   $moduleBasePath . 'Resources\Views\\';
+                    $config[ 'dashboard-path' ]             =   $moduleBasePath . 'Dashboard\\';
                     
                     /**
                      * Defining Entry Class
@@ -74,6 +75,13 @@ class Modules
      */
     public function init()
     {
+        /**
+         * Include Tendoo module Class
+         * Required to autoload module components
+         */
+
+        include_once( base_path() . '\app\Services\TendooModule.php' );
+        
         foreach( $this->modules as $module ) {
 
             /**
@@ -85,7 +93,7 @@ class Modules
             
             // run module entry class
             $loadedModule     =   new $module[ 'entry-class' ];
-            
+
             // add view namespace
             View::addNamespace( ucwords( $module[ 'namespace' ] ), $module[ 'views-path' ] );
         }
@@ -110,5 +118,19 @@ class Modules
     public function getActives()
     {
         return $this->modules;
+    }
+
+    /**
+     * Get by File
+     * @param string file path
+     * @return array/null
+     */
+    public function asFile( $indexFile )
+    {
+        foreach( $this->modules as $module ) {
+            if ( $module[ 'index-file' ] == $indexFile ) {
+                return $module;
+            }
+        }
     }
 }

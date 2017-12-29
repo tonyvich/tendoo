@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\Page;
-use App\Services\Dashboard\MenusConfig;
+use Illuminate\Support\Facades\Event;
 
 class DashboardController extends Controller
 {
-    public function __construct( MenusConfig $menus )
+    public function __construct()
     {
-        
+        $this->menus    =   app()->make( 'App\Services\Dashboard\MenusConfig' );
+        Event::fire( 'dashboard.loaded' );
     }
 
     /** 

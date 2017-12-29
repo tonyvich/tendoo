@@ -1,9 +1,9 @@
 <?php
 namespace Modules\Foo\Http\Controllers;
 use Illuminate\Support\Facades\View;
-use App\Http\Controllers\ModulesController;
+use App\Http\Controllers\DashboardController;
 
-class FooController extends ModulesController
+class FooController extends DashboardController
 {
     public function __construct()
     {
@@ -18,5 +18,10 @@ class FooController extends ModulesController
     public function go()
     {
         return view( 'Foo::go' );
+    }
+
+    public function bar()
+    {
+        return view( 'Foo::bar' );
     }
 }
