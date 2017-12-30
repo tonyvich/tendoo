@@ -2,9 +2,11 @@
 namespace App\Services;
 
 use App\Services\Fields\SetupFields;
+use App\Services\Fields\AuthFields;
 class Field
 {
-    use SetupFields;
+    use SetupFields,
+    AuthFields;
 
     /**
      * Build Self for validation
@@ -15,9 +17,12 @@ class Field
     {
         $fields     =   self::$method();
         $validation     =   [];
-        if( $fields ) {
+        if ( $fields ) {
             foreach( self::$method() as $field ) {
-                $validation[ $field->name ]     =   $field->validation;
+                // if field provide validation
+                if ( @$field->validation ) {
+                    $validation[ $field->name ]     =   $field->validation;
+                }
             }
         }
 

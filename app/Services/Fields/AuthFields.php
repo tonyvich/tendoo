@@ -1,65 +1,85 @@
 <?php
 namespace App\Services\Fields;
 
-trait SetupFields
-{
+trait AuthFields {
     /**
-     * Setup Applications Fields
-     * @return array
+     * Return Login fields
+     * @return array of login fields
      */
-    public static function setupAppDetails()
+    public static function login()
     {
         $Fields                 =   [];
 
-        // Application Name
-        $Field  =   new \StdClass;
-        $Field->name            =   'app_name';
-        $Field->type            =   'text';
-        $Field->label           =   __( 'Application Name' );
-        $Field->placeholder     =   __( 'Application Name' );
-        $Field->description     =   __( 'A short name which describe your application.' );
-        $Field->default         =   __( 'Tendoo Application' );
-        $Field->validation      =   'required|min:6';
-        $Fields[]               =   $Field;
-
-        // User Name
+        // UserName
         $Field  =   new \StdClass;
         $Field->name            =   'username';
         $Field->type            =   'text';
         $Field->label           =   __( 'Username' );
         $Field->placeholder     =   __( 'Username' );
-        $Field->description     =   __( 'Provide the name of the administrator.' );
-        $Field->default         =   __( 'Admin' );
         $Field->validation      =   'required|min:5';
         $Fields[]               =   $Field;
-        
-        // User Name
-        $Field  =   new \StdClass;
-        $Field->name            =   'email';
-        $Field->type            =   'text';
-        $Field->label           =   __( 'Email' );
-        $Field->placeholder     =   __( 'Email' );
-        $Field->description     =   __( 'Provide the email for the administrator.' );
-        $Field->validation      =   'required|email';
-        $Fields[]               =   $Field;
-        
+
         // Password
         $Field  =   new \StdClass;
         $Field->name            =   'password';
         $Field->type            =   'password';
         $Field->label           =   __( 'Password' );
         $Field->placeholder     =   __( 'Password' );
-        $Field->description     =   __( 'Administrator password.' );
         $Field->validation      =   'required|min:6';
         $Fields[]               =   $Field;
         
-        // Password Confirm
+        // Password
         $Field  =   new \StdClass;
-        $Field->name            =   'confirm';
+        $Field->name            =   'remeber_me';
+        $Field->type            =   'checkbox';
+        $Field->description     =   __( 'Remember me' );
+        $Field->default         =   1;
+        $Fields[]               =   $Field;
+
+        return $Fields;
+    }
+
+    /**
+     * Register Fields
+     * @return array of fields object
+     */
+    public static function register()
+    {
+        $Fields                 =   [];
+
+        // UserName
+        $Field  =   new \StdClass;
+        $Field->name            =   'username';
+        $Field->type            =   'text';
+        $Field->label           =   __( 'Username' );
+        $Field->placeholder     =   __( 'Username' );
+        $Field->validation      =   'required|min:5';
+        $Fields[]               =   $Field;
+        
+        // Email
+        $Field  =   new \StdClass;
+        $Field->name            =   'username';
+        $Field->type            =   'text';
+        $Field->label           =   __( 'Email' );
+        $Field->placeholder     =   __( 'Email' );
+        $Field->validation      =   'required|email';
+        $Fields[]               =   $Field;
+
+        // Password
+        $Field  =   new \StdClass;
+        $Field->name            =   'password';
         $Field->type            =   'password';
-        $Field->label           =   __( 'Confirm' );
-        $Field->placeholder     =   __( 'Confirm' );
-        $Field->description     =   __( 'Confirm administrator password.' );
+        $Field->label           =   __( 'Password' );
+        $Field->placeholder     =   __( 'Password' );
+        $Field->validation      =   'required|min:6';
+        $Fields[]               =   $Field;
+
+        // Password Confir;
+        $Field  =   new \StdClass;
+        $Field->name            =   'password_confirm';
+        $Field->type            =   'password';
+        $Field->label           =   __( 'Confirm Password' );
+        $Field->placeholder     =   __( 'Confirm Password' );
         $Field->validation      =   'same:password';
         $Fields[]               =   $Field;
 

@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Database\QueryException;
 
 class Handler extends ExceptionHandler
 {
@@ -13,7 +15,12 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        // \Illuminate\Auth\AuthenticationException::class,
+        // \Illuminate\Auth\Access\AuthorizationException::class,
+        // \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        // \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        // \Illuminate\Session\TokenMismatchException::class,
+        // \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -48,6 +55,33 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if( ! config( 'tendoo.debug.errors', false ) && $request->expectsJson() ) {
+
+            if( $exception instanceof HttpException ) {
+                return response()->json([
+                    'status'    =>  'failed',
+                    'message'   =>  __( 'Page Not Found' ),
+                    'code'      =>  $exception->getStatusCode()
+                ], 401 );
+            }
+
+            if( $exception instanceof TokenMismatchException ) {      
+                return response()->json([
+                    'status'    =>  'failed',
+                    'message'   =>  __( 'Token Error Mismatch' ),
+                    'code'      =>  'token-error'
+                ], 401 );            
+            }
+
+            if( $exception instanceof QueryException ) {
+                return response()->json([
+                    'status'    =>  'failed',
+                    'message'   =>  $exception->getMessage(),
+                    'code'      =>  'db-error'
+                ], 401 );
+            }
+        }
+
         return parent::render($request, $exception);
     }
 }

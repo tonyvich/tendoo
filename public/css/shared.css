@@ -16,3 +16,9 @@ html, body {
 .card-heading {
     line-height: 35px;
 }
+.btn-icon {
+    padding: 2.5px 7px;
+}
+.disabled-module .card-header, .disabled-module .card-body, .disabled-module .card-footer {
+    background: #f1f1f1;
+}

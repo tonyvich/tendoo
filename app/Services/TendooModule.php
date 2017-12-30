@@ -1,6 +1,8 @@
 <?php
+namespace App\Services;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Event;
+
 class TendooModule
 {
     public function __construct( $file )

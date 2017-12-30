@@ -63,8 +63,8 @@
 @if( $field->type  == 'checkbox' )
 <div class="checkbox">
     <label>
-        <input type="checkbox" value="" checked>
-        I'm selected because I seem like the safe choice
+        <input type="checkbox" name="{{ $field->name }}" value="{{ @$field->default }}">
+        {{ @$field->description }}
     </label>
 </div>
 @endif

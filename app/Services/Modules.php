@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
+use App\Services\Helper;
 use XmlParser;
 class Modules 
 {
@@ -35,6 +36,7 @@ class Modules
                     'author'                =>  [ 'uses'    => 'author' ],
                     'description'           =>  [ 'uses'    => 'description' ],
                     'dependencies'          =>  [ 'uses'    =>  'dependencies' ],
+                    'name'                  =>  [ 'uses'    =>  'name' ]
                 ]);
 
                 $config[ 'files' ]          =   $files;
@@ -45,7 +47,7 @@ class Modules
                     $moduleBasePath     =   config( 'tendoo.modules_path' ) . '\\' . $dir . '\\';
                     $indexPath          =   $moduleBasePath . ucwords( $config[ 'namespace' ] . 'Module.php' );
                     $webRoutesPath      =   $moduleBasePath . 'Routes\web.php';
-                    
+
                     // check index existence
                     $config[ 'index-file' ]                 =   is_file( $indexPath ) ? $indexPath : false;
                     $config[ 'routes-file' ]                =   is_file( $webRoutesPath ) ? $webRoutesPath : false;
@@ -53,6 +55,17 @@ class Modules
                     $config[ 'controllers-relativePath' ]   =   ucwords( $config[ 'namespace' ] ) . '\Http\Controllers';
                     $config[ 'views-path' ]                 =   $moduleBasePath . 'Resources\Views\\';
                     $config[ 'dashboard-path' ]             =   $moduleBasePath . 'Dashboard\\';
+                    $config[ 'enabled' ]                    =   false; // by default the module is set as disabled
+
+                    /**
+                     * If the system is installed, then we can check if the module is enabled or not
+                     */
+                    if ( Helper::AppIsInstalled() ) {
+                        $this->options          =   app()->make( 'App\Services\Options' );
+                        $modules                =   ( array ) json_decode( $this->options->get( 'enabled_modules' ), true );
+                        
+                        $config[ 'enabled' ]    =   in_array( $config[ 'namespace' ], $modules ) ? true : false;
+                    }
                     
                     /**
                      * Defining Entry Class
@@ -84,9 +97,9 @@ class Modules
         
         foreach( $this->modules as $module ) {
 
-            /**
-             * We might check whether the module is enabled or not
-             */
+            if ( ! $module[ 'enabled' ] ) {
+                continue;
+            }
             
             // include module index file
             include_once( $module[ 'index-file' ] );

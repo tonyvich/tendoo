@@ -182,6 +182,8 @@ return [
          * Custom Providers
          */
         Orchestra\Parser\XmlServiceProvider::class,
+        Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
+        // Silber\Bouncer\BouncerServiceProvider::class,
 
     ],
 
@@ -237,6 +239,8 @@ return [
          * Custom Aliases
          */
         'XmlParser' => Orchestra\Parser\Xml\Facade::class,
+        'DotenvEditor' => Jackiedo\DotenvEditor\Facades\DotenvEditor::class,
+        'RoleManager' => Silber\Bouncer\BouncerFacade::class,
     ],
 
 ];

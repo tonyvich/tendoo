@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Menus;
 use App\Services\Dashboard\MenusConfig;
+use App\Services\Options;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         // register dashboard menu singleton
         $this->app->singleton( 'App\Services\Dashboard\MenusConfig', function( $app ) {
             return new MenusConfig( $app->make( Menus::class ) );
+        });
+
+        // save Singleton for options
+        $this->app->singleton( Options::class, function(){
+            return new Options;
         });
 
         require_once app_path() . '\Services\Helper.php';

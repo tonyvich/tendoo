@@ -33,6 +33,13 @@ class MenusConfig
         $users->label           =   10;
         $users->namespace       =   'users';
         $users->icon            =   'people';
+        
+        $security                  =   new \stdClass;
+        $security->text            =   __( 'Security' );
+        $security->href            =   route( 'dashboard.security' );
+        $security->label           =   10;
+        $security->namespace       =   'security';
+        $security->icon            =   'security';
 
         $this->menus            =   $menus;
         $this->menus->add( $dashboard );

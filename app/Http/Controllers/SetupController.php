@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 use App\Services\Page;
 use App\Http\Requests\SetupDatabaseRequest;
 use App\Http\Requests\SetupAppDetailsRequest;
+use App\Services\Setup;
 
 class SetupController extends Controller
 {
+    private $setup;
+
     public function __construct() 
     {
+        $this->setup    =   new Setup;
     }
 
     /**
@@ -35,17 +41,30 @@ class SetupController extends Controller
      * Post Database details
      * @since 1.0
      */
-    public function post_database( SetupDatabaseRequest $Request )
+    public function post_database( SetupDatabaseRequest $request )
     {
+        $errors = $this->setup->saveDatabaseSettings( $request );
+        if ( $errors !== true ) {
+            $validator    =   Validator::make( $request->all(), [] );
+            $validator->errors()->add( $errors[ 'name' ], $errors[ 'message' ] );
+            return redirect()->route( 'setup.step', [ 'step' => 'database' ])->withErrors( $validator );
+        }
 
+        // the setup is successful
+        return redirect()->route( 'setup.step', [ 'step' => 'app-details' ]);
     }
 
     /**
      * Post App details
      * @since 1.0
      */
-    public function post_appdetails( SetupAppDetailsRequest $Request )
+    public function post_appdetails( SetupAppDetailsRequest $request )
     {
+        $this->setup->runMigration( $request );
 
+        // fire event when database is installed
+        Event::fire( 'setup.app-details', $request );
+
+        return redirect()->route( 'login.index' );
     }
 }

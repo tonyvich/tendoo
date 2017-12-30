@@ -10,7 +10,8 @@
         "jackiedo/dotenv-editor": "^1.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "orchestra/parser": "^3.5"
+        "orchestra/parser": "^3.5",
+        "silber/bouncer": "v1.0.0-beta.4"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

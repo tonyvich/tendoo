@@ -2,8 +2,7 @@
 namespace Modules\Foo;
 
 use Illuminate\Support\Facades\Event;
-use Modules\Foo\Dashboard\MenusConfig;
-use TendooModule;
+use App\Services\TendooModule;
 
 class FooModule extends TendooModule
 {
