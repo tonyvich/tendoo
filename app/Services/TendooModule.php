@@ -9,11 +9,11 @@ class TendooModule
     {
         $this->modules  =   app()->make( 'App\Services\Modules' );
         $this->module   =   $this->modules->asFile( $file );
-        $eventFiles     =   Storage::disk( 'modules' )->files( $this->module[ 'namespace' ] . '\Events' );
+        $eventFiles     =   Storage::disk( 'modules' )->files( ucwords( $this->module[ 'namespace' ] ) . '\Events' );
         
         // including events files
         foreach( $eventFiles as $file ) {
-            include_once( config( 'tendoo.modules_path' ) . '\\' . $file );
+            include_once( config( 'tendoo.modules_path' ) . $file );
         }
     }
 }

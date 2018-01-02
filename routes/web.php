@@ -21,18 +21,20 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::get( '/dashboard/users/create', 'DashboardController@users_create' )->name( 'dashboard.users.create' );
     Route::get( '/dashboard/users/{id}', 'DashboardController@users_edit' )->name( 'dashboard.users.edit' );
     Route::get( '/dashboard/modules', 'DashboardController@modulesList' )->name( 'dashboard.modules.list' );
-    Route::get( '/dashboard/modules/upload', 'DashboardController@modules_upload' )->name( 'dashboard.modules.upload' );
+    Route::get( '/dashboard/modules/upload', 'DashboardController@uploadModule' )->name( 'dashboard.modules.upload' );
     Route::get( '/dashboard/modules/enable/{namespace}', 'DashboardController@enableModule' )->name( 'dashboard.modules.enable' );
     Route::get( '/dashboard/modules/disable/{namespace}', 'DashboardController@disableModule' )->name( 'dashboard.modules.disable' );
     Route::get( '/dashboard/modules/delete/{namespace}', 'DashboardController@deleteModule' )->name( 'dashboard.modules.delete' );
     Route::get( '/dashboard/modules/extract/{namespace}', 'DashboardController@extractModule' )->name( 'dashboard.modules.extract' );
-    Route::get( '/dashboard/settings/{namespace?}', 'DashboardController@settings' )->name( 'dashboard.settings' );
+    Route::get( '/dashboard/settings/general', 'DashboardController@generalSettings' )->name( 'dashboard.settings.general' );
     Route::get( '/dashboard/security', 'DashboardController@security' )->name( 'dashboard.security' );
-
+    
     Route::get( '/login', 'AuthController@loginIndex' )->name( 'login.index' )->middleware( 'expect.unlogged' );
     Route::get( '/logout', 'AuthController@LogoutIndex' )->name( 'logout.index' );
     Route::get( '/register', 'AuthController@registerIndex' )->name( 'register.index' )->middleware( 'expect.unlogged' );
-
+    
+    Route::post( '/dashboard/modules/post', 'DashboardController@postModule' )->name( 'dashboard.modules.post' );
+    Route::post( '/dashboard/options/post', 'DashboardController@postOptions' )->name( 'dashboard.options.post' );
     Route::post( '/login/post', 'AuthController@postLogin' )->name( 'login.post' )->middleware( 'expect.unlogged' );
     Route::post( '/register/post', 'AuthController@postLogin' )->name( 'register.post' )->middleware( 'expect.unlogged' );
 });

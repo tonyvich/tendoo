@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 // use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -37,5 +38,15 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo( Role::class );
+    }
+
+    /**
+     * Get authenticated user pseudo
+     * @return string
+     */
+    public function pseudo()
+    {
+        $user   =   Auth::user();
+        return $user->name;
     }
 }

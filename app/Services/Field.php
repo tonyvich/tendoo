@@ -3,10 +3,12 @@ namespace App\Services;
 
 use App\Services\Fields\SetupFields;
 use App\Services\Fields\AuthFields;
+use App\Services\Fields\GeneralSettingsFields;
 class Field
 {
     use SetupFields,
-    AuthFields;
+        AuthFields,
+        GeneralSettingsFields;
 
     /**
      * Build Self for validation

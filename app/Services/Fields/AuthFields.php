@@ -30,7 +30,7 @@ trait AuthFields {
         
         // Password
         $Field  =   new \StdClass;
-        $Field->name            =   'remeber_me';
+        $Field->name            =   'remember_me';
         $Field->type            =   'checkbox';
         $Field->description     =   __( 'Remember me' );
         $Field->default         =   1;

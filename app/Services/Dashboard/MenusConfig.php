@@ -22,7 +22,7 @@ class MenusConfig
 
         $settings               =   new \stdClass;
         $settings->text         =   __( 'Settings' );
-        $settings->href         =   route( 'dashboard.settings' );
+        $settings->href         =   route( 'dashboard.settings.general' );
         $settings->label        =   10;
         $settings->namespace    =   'settings';
         $settings->icon         =   'settings';
@@ -46,5 +46,14 @@ class MenusConfig
         $this->menus->add( $modules );
         $this->menus->add( $settings );
         $this->menus->add( $users );
+        $this->menus->add( $security );
+
+        $subSecurity                  =   new \stdClass;
+        $subSecurity->text            =   __( 'Sub Security' );
+        $subSecurity->href            =   'something';
+        $subSecurity->label           =   10;
+        $subSecurity->namespace       =   'sub';
+
+        $this->menus->addTo( 'security', $subSecurity );
     }
 }

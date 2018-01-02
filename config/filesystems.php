@@ -60,6 +60,11 @@ return [
             'root' => base_path( 'modules' ),
         ],
 
+        'temp-modules'  =>  [
+            'driver'    =>  'local',
+            'root'  =>  storage_path( 'modules' )
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
