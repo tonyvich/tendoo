@@ -32,8 +32,9 @@ trait AuthFields {
         $Field  =   new \StdClass;
         $Field->name            =   'remember_me';
         $Field->type            =   'checkbox';
-        $Field->description     =   __( 'Remember me' );
-        $Field->default         =   1;
+        $Field->options         =   [
+            '1'     =>  __( 'Remember Me' )
+        ];
         $Fields[]               =   $Field;
 
         return $Fields;

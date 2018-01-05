@@ -11,6 +11,11 @@ use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware( 'can.register' )->only([ 'registerIndex', 'postRegister' ]);
+    }
+    
     /**
      * Login Controller
      * @return view

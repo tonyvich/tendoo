@@ -18,7 +18,7 @@ trait SetupFields
         $Field->label           =   __( 'Application Name' );
         $Field->placeholder     =   __( 'Application Name' );
         $Field->description     =   __( 'A short name which describe your application.' );
-        $Field->default         =   __( 'Tendoo Application' );
+        $Field->value         =   __( 'Tendoo Application' );
         $Field->validation      =   'required|min:6';
         $Fields[]               =   $Field;
 
@@ -29,7 +29,7 @@ trait SetupFields
         $Field->label           =   __( 'Username' );
         $Field->placeholder     =   __( 'Username' );
         $Field->description     =   __( 'Provide the name of the administrator.' );
-        $Field->default         =   __( 'Admin' );
+        $Field->value           =   __( 'Admin' );
         $Field->validation      =   'required|min:5';
         $Fields[]               =   $Field;
         

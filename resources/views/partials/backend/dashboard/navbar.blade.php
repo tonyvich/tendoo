@@ -1,8 +1,8 @@
 @inject( 'User', 'App\Models\User' )
-<nav id="main-nav" class=" p-0 navbar navbar-expand-lg navbar-light bg-light d-flex">
+<nav id="main-nav" class="p-0 navbar navbar-expand-lg navbar-light bg-light d-flex">
 	<div class="toggle-button h-100 d-flex align-items-center justify-content-center">
-		<a href="#">
-		<i class="material-icons">menus</i>
+		<a href="javascript:void(0)" @click="toggle()">
+			<i class="material-icons">menus</i>
 		</a>
 	</div>
 	<div class="horizontal-menu-container d-flex flex-row">

@@ -1,44 +1,40 @@
 @inject( 'Field', 'App\Services\Field' )
-@section( 'partials.shared.head' )
-    @parent
-    <link rel="stylesheet" href="{{ asset( 'css/backend-module.css' ) }}">
-@endsection
+@inject( 'Route', 'illuminate\Support\Facades\Route' )
+
 @extends( 'components.backend.dashboard.master', [ 'parent_class' => 'p-0' ])
 @section( 'components.backend.dashboard.master.body' )
     <div class="content-wrapper">
         @include( 'partials.shared.page-title', [
             'title'     =>  __( 'General Settings' ),
+            'description'   =>  __( 'Group all basic options for the application' )
         ])
         <div class="content-body h-100">
             <div class="container-fluid pt-3 p-4">
-                <div class="card no-shadow">
-                    {{--  <div class="card-header p-0">
-                        <h5 class="box-title">Some Title</h5>
-                    </div>  --}}
-                    <div class="card-header p-0">
-                        <ul class="nav nav-tabs">
-                            @forelse( ( array ) @$tabs as $tab )
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ $tab[ 'href' ] }}">{{ $tab[ 'name' ] }}</a>
-                            </li>
-                            @empty
-                            <li class="nav-item">
-                                <a class="nav-link disabled" href="#">{{ __( 'No tabs provided' ) }}</a>
-                            </li>
-                            @endforelse
-                        </ul>
+                <form action="{{ route( 'dashboard.options.post' ) }}" method="post">
+                    {{ csrf_field() }}
+                    {{ route_field() }}
+                    <div class="card">
+                        <div class="card-header p-3">
+                            <button type="submit" class="mb-0 btn btn-raised btn-primary">{{ __( 'Save Settings' ) }}</button>
+                        </div>
+                        @include( 'partials.shared.errors', [
+                            'errors'    =>  $errors,
+                            'class'     =>  'mb-0'
+                        ])
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12 col-sm-12">
+                                    <h4>{{ __( 'Application Details' ) }}</h4>
+                                    @each( 'partials.shared.fields', $Field->generalSettings(), 'field' )
+                                </div>
+                                <div class="col-md-6 col-xs-12 col-sm-12">
+                                    <h4>{{ __( 'Registration' ) }}</h4>
+                                    @each( 'partials.shared.fields', $Field->registration(), 'field' )
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-0 card-group">
-                        <div class="card card-body">Module 1</div>
-                        <div class="card card-body">Module 1</div>
-                        <div class="card card-body">Module 1</div>
-                    </div>
-                    <div class="card-body p-0 card-group">
-                        <div class="card card-body">Module 1</div>
-                        <div class="card card-body">Module 1</div>
-                        <div class="card card-body">Module 1</div>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

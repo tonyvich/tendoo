@@ -1,5 +1,5 @@
 <div class="content-header p-4">
-    <div class="d-flex flex-column justify-content-between">
+    <div class="d-flex flex-row justify-content-between">
         <div class="content-heading mb-2">
             <h3>{{ @$title ? $title : __( 'No title provided' ) }}</h3>
             <small>{{ @$description }}</small>

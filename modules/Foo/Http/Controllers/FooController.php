@@ -2,6 +2,8 @@
 namespace Modules\Foo\Http\Controllers;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\DashboardController;
+use App\Services\Page;
+use Modules\Foo\Fields\DashboardFields;
 
 class FooController extends DashboardController
 {
@@ -23,5 +25,21 @@ class FooController extends DashboardController
     public function bar()
     {
         return view( 'Foo::bar' );
+    }
+
+    public function settings()
+    {
+        Page::setTitle( __( 'NexoPOS Settings' ) );
+        return view( 'Foo::settings' );
+    }
+
+    /**
+     * general settings
+     * @param void
+     */
+    public function generalSettings()
+    {
+        Page::setTitle( __( 'NexoPOS Settings' ) );
+        return view( 'Foo::settings' );
     }
 }

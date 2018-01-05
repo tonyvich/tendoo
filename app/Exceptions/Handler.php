@@ -55,33 +55,40 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if( ! config( 'tendoo.debug.errors', false ) && $request->expectsJson() ) {
+        if( ! config( 'tendoo.debug.errors', false ) ) {
 
-            if( $exception instanceof HttpException ) {
-                return response()->json([
-                    'status'    =>  'failed',
-                    'message'   =>  __( 'Page Not Found' ),
-                    'code'      =>  $exception->getStatusCode()
-                ], 401 );
-            }
+            if ( $request->expectsJson() ) {
 
-            if( $exception instanceof TokenMismatchException ) {      
-                return response()->json([
-                    'status'    =>  'failed',
-                    'message'   =>  __( 'Token Error Mismatch' ),
-                    'code'      =>  'token-error'
-                ], 401 );            
-            }
-
-            if( $exception instanceof QueryException ) {
-                return response()->json([
-                    'status'    =>  'failed',
-                    'message'   =>  $exception->getMessage(),
-                    'code'      =>  'db-error'
-                ], 401 );
+                if( $exception instanceof HttpException ) {
+                    return response()->json([
+                        'status'    =>  'failed',
+                        'message'   =>  __( 'Page Not Found' ),
+                        'code'      =>  $exception->getStatusCode()
+                    ], 401 );
+                }
+    
+                if( $exception instanceof TokenMismatchException ) {      
+                    return response()->json([
+                        'status'    =>  'failed',
+                        'message'   =>  __( 'Token Error Mismatch' ),
+                        'code'      =>  'token-error'
+                    ], 401 );            
+                }
+    
+                if( $exception instanceof QueryException ) {
+                    return response()->json([
+                        'status'    =>  'failed',
+                        'message'   =>  $exception->getMessage(),
+                        'code'      =>  'db-error'
+                    ], 401 );
+                }
+            } else {
+                
+                if( $exception instanceof QueryException ) {
+                    return response()->view( 'errors.db-error', [ 'e' => $exception ] );
+                }
             }
         }
-
         return parent::render($request, $exception);
     }
 }

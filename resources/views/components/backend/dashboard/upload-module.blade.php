@@ -9,6 +9,7 @@
     <div class="h-100 content-wrapper">
         @include( 'partials.shared.page-title', [
             'title'     =>  __( 'Upload a module' ),
+            'description'   =>  __( 'Add feature by uploading a Tendoo CMS module' ),
             'links'   =>  [
                 [ 
                     'href'  =>  route( 'dashboard.modules.list' ),

@@ -30,4 +30,14 @@ class Field
 
         return $validation;
     }
+
+    /**
+     * Get Fields
+     * @param string Class Name
+     * @return void
+     */
+    static function get( string $className, $method )
+    {
+        return app()->make( $className )->$method();
+    }
 }

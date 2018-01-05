@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'app.notInstalled' => \App\Http\Middleware\AppNotInstalled::class,
         'expect.unlogged'  =>   \App\Http\Middleware\RedirectIfAuthenticated::class,
         'expect.logged'  =>   \App\Http\Middleware\RedirectIfNotAuthenticated::class,
+        'can.register'  =>  \App\Http\Middleware\CheckRegistrationStatus::class,
     ];
 }

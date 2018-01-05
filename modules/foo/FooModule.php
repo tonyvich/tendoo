@@ -10,5 +10,6 @@ class FooModule extends TendooModule
     {
         parent::__construct( __FILE__ );
         Event::listen( 'dashboard.loaded', 'Modules\Foo\Events\DashboardLoaded@registerMenus' );
+        Event::listen( 'before.validatingOptions', 'Modules\Foo\Events\Options@validationRule' );
     }
 }

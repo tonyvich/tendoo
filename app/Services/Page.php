@@ -21,6 +21,6 @@ class Page
      */
     public static function getTitle()
     {
-        return self::$title;
+        return self::$title . ' &mdash; ' . config( 'app.name' );
     }
 }

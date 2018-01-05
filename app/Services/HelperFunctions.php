@@ -1,4 +1,6 @@
 <?php
+use illuminate\Support\Facades\Route;
+
 if (!function_exists('array_insert')) {
 	/**
 	 * Insert an array into another array before/after a certain key
@@ -115,4 +117,14 @@ function generate_timezone_list()
     }
 
     return $timezone_list;
+}
+
+/**
+ * Route Field
+ * Return a hidden tag of the route field
+ * @return string
+ */
+function route_field()
+{
+	echo '<input type="hidden" name="_route" value="' . Route::currentRouteName() . '">';
 }

@@ -26,7 +26,7 @@ class SetupController extends Controller
     public function steps( string $step = '' )
     {
         if ( $step == '' ) {
-            Page::setTitle( 'FooBar' );
+            Page::setTitle( 'Setup Tendoo CMS' );
             return view( 'components.frontend.setup.step-home' );
         } else if ( $step == 'database' ) {
             Page::setTitle( __( 'Database Configuration' ) );

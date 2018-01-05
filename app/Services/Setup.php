@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Jackiedo\DotenvEditor\Facades\DotenvEditor;
+use App\Mail\SetupComplete;
 use RoleManager;
 use App\Models\User;
 use App\Services\Options;
@@ -36,7 +38,6 @@ class Setup
         try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
-
             switch( $e->getCode() ) {
                 case 2002   :   
                     $message =  [
@@ -63,7 +64,7 @@ class Setup
                     ];
                 break;
                 case 1044   :   
-                $message =  [
+                    $message =  [
                         'name'        => 'username',
                         'error'         =>  'accessDenied',
                         'message'      =>  __( 'Access denied for this user.' ),
@@ -104,32 +105,53 @@ class Setup
     public function runMigration( Request $request )
     {
         /**
+         * Let's create the tables. The DB is supposed to be set
+         */
+        Artisan::call( 'migrate:fresh' );
+        
+        /**
          * We assume so far the application is installed
          * then we can launch option service
          */
-        
         $this->options  =   app()->make( 'App\Services\Options' );
-
-        Artisan::call( 'migrate:fresh' );
         
+        /**
+         * All roles with basic permissions
+         */
         RoleManager::allow( 'master' )->to( 'manage.modules' );
         RoleManager::allow( 'master' )->to( 'manage.users' );
         RoleManager::allow( 'master' )->to( 'manage.settings' );
-        
+        RoleManager::allow( 'master' )->to( 'manage.profile' );
         RoleManager::allow( 'admin' )->to( 'manage.settings' );
-        RoleManager::allow( 'admin' )->to( 'manage.users' );
-
+        RoleManager::allow( 'admin' )->to( 'manage.profile' );
+        RoleManager::allow( 'users' )->to( 'manage.profile' );
+        
+        $this->options->set( 'app_name', $request->input( 'app_name' ) );
+        $this->options->set( 'open_registration', 'true' );
+        
         $user               =   new User;
         $user->name         =   $request->input( 'username' );
         $user->password     =   bcrypt( $request->input( 'password' ) );
         $user->email        =   $request->input( 'email' );
         $user->active       =   true; // first user active by default;
         $user->save();
-
+        
+        /**
+         * The main user is the master
+         */
         RoleManager::assign( 'master' )->to( $user );
 
-        $this->options->set( 'app_name', $request->input( 'app_name' ) );
-
+        /**
+         * Send Welcome email 
+         * since we're polite
+         */
+        // Mail::to( $request->input( 'email' ) )->send( 
+        //     new SetupComplete()
+        // );
+        
+        /**
+         * Set version to close setup
+         */
         DotenvEditor::setKey( 'TENDOO_VERSION', config( 'tendoo.version' ) );
         DotenvEditor::save();
     }

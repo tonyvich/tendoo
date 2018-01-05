@@ -27,7 +27,21 @@ class DashboardLoaded
         $Bar->href          =   route( 'dashboard.bar.index');
         $Bar->icon          =   'build';
 
+        
+        $settings               =   new \StdClass;
+        $settings->namespace    =   'nexopos.settings';
+        $settings->text         =   __( 'NexoPOS Settings' );
+        $settings->href         =   route( 'dashboard.settings.nexopos' );
+        $settings->icon         =   'home';
+        
+        $nexoposGeneral         =   new \StdClass;
+        $nexoposGeneral->namespace  =   'nexopos.settings.general';
+        $nexoposGeneral->text       =   __( 'General' );
+        $nexoposGeneral->href       =   route( 'dashboard.settings.nexopos.general' );
+        
         $this->menus->addAfter( 'dashboard', $Foo );
         $this->menus->addAfter( 'foo', $Bar );
+        $this->menus->addAfter( 'foo', $settings );
+        $this->menus->addTo( 'nexopos.settings', $nexoposGeneral );
     }
 }

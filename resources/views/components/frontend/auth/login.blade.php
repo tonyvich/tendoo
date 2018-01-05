@@ -1,4 +1,5 @@
 @inject( 'Field', 'App\Services\Field' )
+@inject( 'Options', 'App\Services\Options' )
 @extends( 'components.frontend.auth.master' )
 @section( 'components.frontend.auth.master.body' )
 <div class="col-md-4">
@@ -12,7 +13,9 @@
             </div>
             <div class="card-footer p-2 d-flex justify-content-between">
                 <button class="mb-0 btn btn-raised btn-primary" type="submit">{{ __( 'Login' ) }}</button>
+                @if( $Options->get( 'open_registration' ) )
                 <button onClick="document.location = '{{ route( 'register.index' ) }}'" class="mb-0 btn btn-raised btn-info" type="button">{{ __( 'Register' ) }}</a>
+                @endif
             </div>
         </div>
     </form>

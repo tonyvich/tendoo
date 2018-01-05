@@ -8,15 +8,19 @@
 
 @media (max-width: 992px) { 
     #sidebar-menu {
-        display: none;
+        left:-250px;
+        width:0px;
     }
-}
-
-@media (min-width: 993px) { 
-    aside#sidebar-menu, #logo-wrapper {
+    .expanded-aside aside#sidebar-menu {
+        left:0px;
         width: 250px;
     }
 }
+.collapsed-aside aside#sidebar-menu {
+    left: -250px;
+    width: 0px;
+}
+
 #sidebar-menu .sidebar-logo {
     height: 51px;
 }
@@ -43,6 +47,7 @@
 aside#sidebar-menu {
     box-shadow: 0px 0px 5px 0px #333;
     position: relative;
+    width: 250px;
 }
 
 #main-nav {
@@ -66,7 +71,7 @@ aside#sidebar-menu {
     width: 100%;
 }
 #app-body .content-header {
-    height: 195px;
+    height: 175px;
     color: #FFF;
     background:rgb(113, 66, 165);
 }
@@ -110,7 +115,7 @@ aside#sidebar-menu .list-group-item ul {
     display: none;
 }
 
-aside#sidebar-menu .list-group-item.active ul {
+aside#sidebar-menu .list-group-item.active-menu ul {
     display: block;
 }
 

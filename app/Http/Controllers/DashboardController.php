@@ -8,6 +8,7 @@ use App\Services\Options;
 use App\Services\Modules;
 use Illuminate\Support\Facades\Event;
 use App\Services\Helper;
+use App\Http\Requests\OptionsRequest;
 
 class DashboardController extends Controller
 {
@@ -207,5 +208,80 @@ class DashboardController extends Controller
     {
         Page::setTitle( __( 'General Settings' ) );
         return view( 'components.backend.dashboard.general-settings' );
+    }
+
+    /**
+     * Post Options
+     * receive and treat options send
+     * @param void
+     * @return void
+     */
+    public function postOptions( OptionsRequest $request )
+    {
+        $inputs     =   $request->except([ '_token', '_route', '_radio', '_checkbox' ]);
+        /**
+         * If the field is defined as a radio or  checkbox field, then
+         * it's deleted from the db to define new options. 
+         * This is performed specially in case where the user 
+         * disable a switch field or checkbox
+         */
+
+        // deleting _checkbox field
+        foreach( ( array )  $request->input( '_checkbox' ) as $key ) {
+            if ( in_array( $key, ( array ) $request->input( '_radio' ) ) || in_array( $key, ( array ) $request->input( '_checkbox' ) ) ) {
+                $this->options->delete( $key );
+            }
+        }
+
+        // deleting _radio field
+        foreach( ( array ) $request->input( '_radio' ) as $key ) {
+            if ( in_array( $key, ( array ) $request->input( '_radio' ) ) ) {
+                $this->options->delete( $key );
+            }
+        }
+
+        /**
+         * Loop options and saved it
+         * to the option table
+         */
+        foreach ( $inputs as $key => $value ) {
+            /**
+             * Saving/updating new value to the database
+             */
+            if ( ! is_array( $value ) ) {
+                $this->options->set( $key, $value );
+            } else {
+                $this->options->set( $key, $value, true ); // set as array
+            }
+        }
+
+        /**
+         * Redirect to previous route
+         */
+        return redirect()->route( $request->input( '_route' ) )->with([
+            'status'    =>  'success',
+            'message'   =>  __( 'The options has been saved.' )
+        ]);
+    }
+
+    /**
+     * Refresh Installation
+     * Pull content from github
+     * @return view
+     */
+    public function update()
+    {
+        Page::setTitle( __( 'Update Tendoo CMS' ) );
+        return view( 'components.backend.dashboard.update' );
+    }
+
+    /**
+     * User List
+     * display available users
+     * @return view of users
+     */
+    public function usersList()
+    {
+        // Page::setTile( __( 'Users' ) );
     }
 }
