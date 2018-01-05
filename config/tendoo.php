@@ -11,5 +11,6 @@ return [
     ],
     'validations'    => [
         'options'       =>  []
-    ]
+    ],
+    'name'          =>  'Tendoo CMS',
 ];

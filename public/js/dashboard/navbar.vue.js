@@ -7,8 +7,13 @@ var TendooTopBar    =   new Vue({
          * @return void
          */
         toggle() {
-            $( 'body > div' ).toggleClass( 'collapsed-aside' );
-            $( 'body > div' ).toggleClass( 'expanded-aside' );
+            if( ! $( 'body > div' ).hasClass( 'collapsed-aside' ) ) {
+                $( 'body > div' ).addClass( 'collapsed-aside' );
+                $( 'body > div' ).removeClass( 'expanded-aside' );
+            } else {
+                $( 'body > div' ).addClass( 'expanded-aside' );
+                $( 'body > div' ).removeClass( 'collapsed-aside' );
+            }
         }
     }
 });

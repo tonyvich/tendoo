@@ -1,24 +1,40 @@
-@media (min-width: 576px) { 
-
-}
-
-@media (min-width: 768px) { 
-
-}
-
-@media (max-width: 992px) { 
-    #sidebar-menu {
+@keyframes closeAside {
+    0% {
+        left: 0px;
+        width: 250px;
+    }  
+    100% {
         left:-250px;
-        width:0px;
-    }
-    .expanded-aside aside#sidebar-menu {
+        width: 0px;
+    } 
+}
+@keyframes openAside {
+    0% {
+        left: -250px;
+        width: 0px;
+    }  
+    100% {
         left:0px;
         width: 250px;
-    }
+    } 
 }
+
+aside#sidebar-menu {
+    width: 250px;
+    left:   0px;
+}
+
 .collapsed-aside aside#sidebar-menu {
-    left: -250px;
+    animation-name: closeAside;
+    animation-duration: 0.2s;
     width: 0px;
+    left:-250px;
+}
+.expanded-aside aside#sidebar-menu {
+    animation-name: openAside;
+    animation-duration: 0.2s;
+    width: 250px;
+    left:  0px;
 }
 
 #sidebar-menu .sidebar-logo {
