@@ -282,6 +282,9 @@ class DashboardController extends Controller
      */
     public function usersList()
     {
-        // Page::setTile( __( 'Users' ) );
+        $model          =   'App\Models\User';
+        $entries        =   $model::all();
+        Page::setTitle( __( 'Users' ) );
+        return view( 'components.backend.dashboard.users-list', compact( 'entries' ) );
     }
 }

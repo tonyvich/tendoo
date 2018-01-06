@@ -11,10 +11,11 @@ class Options
     public function validationRule( $request ) 
     {
         $inputs     =   $request->except([ '_token' ]);
-        if ( $request->input( '_route' ) == 'dashboard.settings.general' ) {
-            // Helper::PushValidationRule([
-            //     'app_name'  =>  'required'
-            // ]);
+        if ( Helper::RefererRouteIs( 'dashboard.settings.nexopos.general' ) ) {
+            Helper::PushValidationRule([
+                'test_field'  =>  'required|min:20',
+                'textarea'  =>  'required|email'
+            ]);
         }
     }
 }

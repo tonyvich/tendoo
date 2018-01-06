@@ -17,6 +17,13 @@ class DashboardFields
         $text->placeholder  =   __( 'Some Text' );
         $text->value        =   $options->get( 'test_field' );
 
-        return [ $text ];
+        $textarea               =   new \stdClass;
+        $textarea->name         =   'textarea';
+        $textarea->label        =   __( 'Text Area' );
+        $textarea->type         =   'textarea';
+        $textarea->placeholder  =   __( 'This is my test areas' );
+        $textarea->value        =   $options->get( 'textarea' );
+
+        return [ $text, $textarea ];
     }
 }

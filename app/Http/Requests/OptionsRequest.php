@@ -29,17 +29,17 @@ class OptionsRequest extends FormRequest
     public function rules()
     {
         /**
-         * Options validation rules can be registered using the 
-         * App\Service\Helper::(trait)PushValidationRule method
-         */
-        Event::Fire( 'before.validatingOptions', $this );
-
-        /**
          * Define default validation rules
          */
         config([ 'tendoo.validations.options' => [
             'app_name'  =>  'sometimes|required'
         ]]);
+        
+        /**
+         * Options validation rules can be registered using the 
+         * App\Service\Helper::(trait)PushValidationRule method
+         */
+        Event::Fire( 'before.validatingOptions', $this );
 
         return config( 'tendoo.validations.options' );
     }

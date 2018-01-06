@@ -12,11 +12,20 @@ var TendooAsideMenu     =   new Vue({
             let hasSubMenu  =   $( parent ).find( 'ul' ).length > 0;
 
             /**
+             * If we're not clicking on a sub menu
+             */
+            if ( $( element ).closest( '.sub-menu' ).length > 0 ) {
+                return false;
+            }
+
+            /**
              * Close all other menus
              */
             $( '#tendoo-aside-menu li' ).each( function(){
-                $( this ).removeClass( 'active-menu' );
-                $( this ).find( '.arrow' ).html( 'keyboard_arrow_down' );
+                if ( $( this ).html() != $( parent ).html() ) {
+                    $( this ).removeClass( 'active-menu' );
+                    $( this ).find( '.arrow' ).html( 'keyboard_arrow_down' );
+                }
             })
 
             if ( hasSubMenu ) {

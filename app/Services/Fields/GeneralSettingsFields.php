@@ -50,6 +50,11 @@ trait GeneralSettingsFields
         ];
         $validate_users->description  =   __( 'Everytime a user will register, his account will be set as active immediately' );
 
+        $register_as                    =   new \StdClass;
+        $register_as->name              =   'register_as';
+        $register_as->label             =   __( 'Register As' );
+        $register_as->type             =   'select';
+        $register_as->options           =   [];
         return [ $open_registration, $validate_users ];
     }
 }
