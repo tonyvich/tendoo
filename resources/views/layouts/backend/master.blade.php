@@ -3,6 +3,7 @@
 @endsection
 @section( 'partials.shared.footer' )
     <script src="{{ asset( 'bower_components/vue/dist/vue.min.js' ) }}"></script>
+    <script src="{{ asset( 'bower_components/axios/dist/axios.min.js' ) }}"></script>
     <script src="{{ asset( 'bower_components/jquery/dist/jquery.min.js' ) }}"></script>
     <script src="{{ asset( 'bower_components/popper.js/dist/umd/popper.min.js' ) }}"></script>
     <script src="{{ asset( 'bower_components/bootstrap-material-design/js/bootstrap-material-design.min.js' ) }}"></script>

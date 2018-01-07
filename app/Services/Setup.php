@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Jackiedo\DotenvEditor\Facades\DotenvEditor;
 use App\Mail\SetupComplete;
-use RoleManager;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\Permission;
 use App\Services\Options;
 
 class Setup
@@ -116,21 +117,21 @@ class Setup
         $this->options  =   app()->make( 'App\Services\Options' );
         
         /**
-         * All roles with basic permissions
+         * Add permissions
          */
-        RoleManager::allow( 'master' )->to( 'manage.modules' );
-        RoleManager::allow( 'master' )->to( 'manage.users' );
-        RoleManager::allow( 'master' )->to( 'manage.settings' );
-        RoleManager::allow( 'master' )->to( 'manage.profile' );
-        RoleManager::allow( 'admin' )->to( 'manage.settings' );
-        RoleManager::allow( 'admin' )->to( 'manage.profile' );
-        RoleManager::allow( 'users' )->to( 'manage.profile' );
+        $this->createPermissions();
+
+        /**
+         * Create Roles
+         */
+        $this->createRoles();
         
         $this->options->set( 'app_name', $request->input( 'app_name' ) );
         $this->options->set( 'open_registration', 'true' );
         
         $user               =   new User;
-        $user->name         =   $request->input( 'username' );
+        $user->id           =   rand(1,99);
+        $user->username     =   $request->input( 'username' );
         $user->password     =   bcrypt( $request->input( 'password' ) );
         $user->email        =   $request->input( 'email' );
         $user->active       =   true; // first user active by default;
@@ -139,13 +140,13 @@ class Setup
         /**
          * The main user is the master
          */
-        RoleManager::assign( 'master' )->to( $user );
+        User::set( $user )->as( 'admin' );
 
         /**
          * Send Welcome email 
          * since we're polite
          */
-        // Mail::to( $request->input( 'email' ) )->send( 
+        // Mail::to( $user->email )->send( 
         //     new SetupComplete()
         // );
         
@@ -154,5 +155,96 @@ class Setup
          */
         DotenvEditor::setKey( 'TENDOO_VERSION', config( 'tendoo.version' ) );
         DotenvEditor::save();
+    }
+
+    /**
+     * Create Permission
+     * @param void
+     * @return void
+     */
+    private function createPermissions()
+    {
+        /**
+         * All roles with basic permissions
+         */
+        // Crud for users and options
+        foreach( [ 'users', 'options', 'profile' ] as $permission ) {
+            foreach( [ 'create', 'read', 'update', 'delete' ] as $crud ) {
+                // Create User
+                $this->permission                   =   new Permission;
+                $this->permission->name             =   ucwords( $crud ) . ' ' . ucwords( $permission );
+                $this->permission->namespace        =   $crud . '.' . $permission;
+                $this->permission->description      =   sprintf( __( 'Can %s %s' ), $crud, $permission );
+                $this->permission->save();
+            }
+        }
+
+        foreach( [ 'modules' ] as $permission ) {
+            foreach( [ 'install', 'enable', 'disable', 'update', 'delete' ] as $crud ) {
+                // Create User
+                $this->permission                   =   new Permission;
+                $this->permission->name             =   ucwords( $crud ) . ' ' . ucwords( $permission );
+                $this->permission->namespace        =   $crud . '.' . $permission;
+                $this->permission->description      =   sprintf( __( 'Can %s %s' ), $crud, $permission );
+                $this->permission->save();
+            }
+        }
+
+        // for core update
+        $this->permission                   =   new Permission;
+        $this->permission->name             =   __( 'Update Core' );
+        $this->permission->namespace        =   'update.core';
+        $this->permission->description      =   __( 'Can update core' );
+        $this->permission->save();
+    }
+
+    /**
+     * Create Roles
+     * @param void
+     * @return void
+     */
+    private function createRoles()
+    {
+        // User Role
+        $this->role                 =   new Role;
+        $this->role->name           =   __( 'User' );
+        $this->role->namespace      =   'user';
+        $this->role->description    =   __( 'Basic user role.' );
+        $this->role->save(); 
+
+        // Admin Role
+        $this->role                 =   new Role;
+        $this->role->name           =   __( 'Supervisor' );
+        $this->role->namespace      =   'supervisor';
+        $this->role->description    =   __( 'Advanced role which can access to the dashboard manage settings.' );
+        $this->role->save(); 
+
+        // Master User
+        $this->role                 =   new Role;
+        $this->role->name           =   __( 'Administrator' );
+        $this->role->namespace      =   'admin';
+        $this->role->description    =   __( 'Master role which can perform all actions like create users, install/update/delete modules and much more.' );
+        $this->role->save(); 
+
+        Role::AddPermissions( 'admin', [ 
+            'manage.options', 
+            'manage.users', 
+            'manage.profile', 
+            'install.modules', 
+            'enable.modules',
+            'disable.modules',
+            'update.modules',
+            'delete.modules' 
+        ]);
+
+        Role::AddPermissions( 'supervisor', [ 
+            'manage.options', 
+            'manage.users', 
+            'manage.profile' 
+        ]);
+
+        Role::AddPermissions( 'user', [ 
+            'manage.profile' 
+        ]);
     }
 }

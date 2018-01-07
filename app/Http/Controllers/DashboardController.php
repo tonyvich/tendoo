@@ -9,6 +9,8 @@ use App\Services\Modules;
 use Illuminate\Support\Facades\Event;
 use App\Services\Helper;
 use App\Http\Requests\OptionsRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -284,7 +286,33 @@ class DashboardController extends Controller
     {
         $model          =   'App\Models\User';
         $entries        =   $model::all();
+
+        $resource       =   'users';
+        $columns        =   [
+            [ 'name'    =>  'username',     'text'  =>  __( 'User Name' ) ],
+            [ 'name'    =>  'email',        'text'  =>  __( 'Email' ) ],
+            [ 'name'    =>  'role',         'text'  =>  __( 'Role' ) ],
+            [ 'name'    =>  'created_at',   'text'  =>  __( 'Created At' ) ],
+            [ 'name'    =>  'active',       'text'  =>  __( 'Active' ) ]
+        ];
+
+        $actions        =   [
+            'edit'      =>  function( $user ) {
+                return [
+                    'text'  =>  __( 'Edit' ),
+                    'url'   =>  url()->route( 'dashboard.users.edit', [ 'id' => $user->id ] )
+                ];
+            },
+            'delete'    =>  function( $user ) {
+                return [
+                    'type'  =>  'DELETE',
+                    'url'   =>  url()->route( 'dashboard.users.delete', [ 'id' => $user->id ]),
+                    'text'  =>  __( 'Delete' )
+                ];
+            }
+        ];
+
         Page::setTitle( __( 'Users' ) );
-        return view( 'components.backend.dashboard.users-list', compact( 'entries' ) );
+        return view( 'components.backend.dashboard.users-list', compact( 'columns', 'actions', 'resource' ) );
     }
 }

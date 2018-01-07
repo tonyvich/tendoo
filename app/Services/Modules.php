@@ -106,7 +106,6 @@ class Modules
         include_once( base_path() . '\app\Services\TendooModule.php' );
         
         foreach( $this->modules as $module ) {
-
             if ( ! $module[ 'enabled' ] ) {
                 continue;
             }

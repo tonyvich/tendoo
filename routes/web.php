@@ -38,6 +38,16 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::post( '/dashboard/options/post', 'DashboardController@postOptions' )->name( 'dashboard.options.post' );
     Route::post( '/login/post', 'AuthController@postLogin' )->name( 'login.post' )->middleware( 'expect.unlogged' );
     Route::post( '/register/post', 'AuthController@postLogin' )->name( 'register.post' )->middleware( 'expect.unlogged' );
+
+    Route::delete( '/dashboard/users/{id}', 'DashboardController@deleteUser' )->name( 'dashboard.users.delete' );
+
+    Route::group([ 'prefix' => '/api/{resource}'], function( $request ) {        
+        Route::get( '', 'ApiController@getAll' )->name( 'api.all' );
+        Route::get( '{id}', 'ApiController@getOne' )->name( 'api.one' );
+        Route::delete( '{id}', 'ApiController@delete' )->name( 'api.delete' );
+        Route::put( '{id}', 'ApiController@put' )->name( 'api.put' );
+        Route::post( '', 'ApiController@single' )->name( 'api.post' );
+    });
 });
 
 Route::middleware([ 'app.notInstalled' ])->group( function(){

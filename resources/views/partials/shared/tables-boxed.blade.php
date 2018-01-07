@@ -1,16 +1,21 @@
-<div class="card">
+@section( 'partials.shared.footer' )
+    @parent
+    <script src="{{ asset( 'js/dashboard/table.vue.js' ) }}"></script>
+@endsection
+
+<script>
+let table       =   {
+    columns     :   @json( ( array ) @$columns ),
+    actions     :   @json( ( array ) @$actions ),
+    url         :   '{{ url()->route( 'api.all', [ 'resource' => @$resource ] ) }}'
+};
+
+</script>
+
+<div class="card" id="tendoo-table">
     <div class="card-header p-0 d-flex justify-content-between">
         <h5 class="box-title">{{ __( 'Users List' ) }}</h5>
     </div>
-    @php
-    $columns        =   [
-        'name'      =>  __( 'User Name' ),
-        'email'     =>  __( 'Email' ),
-        'role'      =>  __( 'Role' ),
-        'registered_on'     =>   __( 'Member Since' ),
-        'last_activity'     =>  __( 'Active' ),
-    ];
-    @endphp
     <div class="card-body p-0">
         <table class="table table-striped mb-0">
             <thead>
@@ -18,50 +23,41 @@
                     <th width="10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox">
                             </label>
                         </div>
                     </th>
-                    @foreach( ( array ) @$columns as $name => $text )
-                    <th class="column-{{ $name }}">{{ $text }}</th>
-                    @endforeach
+                    <th v-for="column in columns" class="column-@{{ column.name }}">@{{ column.text }}</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @forelse( $entries as $entry )
-                <tr>
+                <tr v-for="entry in entries">
                     <td>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" :checked="entry.checked" :value="entry.id">
                             </label>
                         </div>
                     </td>
-                    @foreach( ( array ) @$columns as $name => $text )
-                    <th class="column-{{ $name }}">{{ $entry->$name }}</th>
-                    @endforeach
+
+                    <th v-for="column in columns" class="column-@{{ column.name }}">@{{ entry[ column.name ] }}</th>
+                    
                     <th class="p-2" width="100">
                         <div class="dropdown show">
                             <a class="btn mb-0 btn-raised btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ __( 'Options' ) }}
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="" class="dropdown-item"></a>
                             </div>
                         </div>
                     </th>
                 </tr>
-                @empty
-                <tr>
-                    <td class="text-center" colspan="{{ intval( count( @$columns ) ) + 2 }}">
-                    {{ __( 'There is not entries to display' ) }}
-                    </td>
+                    <tr v-if="entries.length == 0">
+                    <td class="text-center" :colspan="columns.length + 2">{{ __( 'No entry available' ) }}</td>
                 </tr>
-                @endforelse
             </tbody>
         </table>
     </div>

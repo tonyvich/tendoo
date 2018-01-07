@@ -50,7 +50,7 @@ class AuthController extends Controller
         Event::fire( 'before.login' );
 
         if ( Auth::attempt([
-            'name'      => $request->input( 'username' ), 
+            'username'  => $request->input( 'username' ), 
             'password'  => $request->input( 'password' ),
             'active'    =>  true 
         ], $request->input( 'remember_me' ) ? true : false ) ) {

@@ -50,12 +50,10 @@ class Role extends Model
         
         if( $role ) {
             foreach( ( array ) $permissions as $permission ) {
-                $perm       =   explode( '@', $permission );
+                $perm       =   explode( '.', $permission );
                 if( $perm[0] == 'manage' ) {
                     foreach( [ 'create', 'read', 'update', 'delete' ] as $prefix ) {
-                        $getPerm        =   Permission::where( 'namespace', $prefix . '@' . $perm[1] )->first();
-                        // dd( $getPerm, $prefix . '@' . $perm[1] );
-                        // check if role already has this perm
+                        $getPerm        =   Permission::where( 'namespace', $prefix . '.' . $perm[1] )->first();
                         if( $role->permissions()->find( $getPerm[ 'id' ] ) == null ) {
                             $role->permissions()->attach( $getPerm );
                         }                        
