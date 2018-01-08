@@ -2,6 +2,7 @@
 namespace Modules\Foo\Events;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Services\Helper;
+use Modules\Foo\Fields\DashboardFields;
 
 class Options 
 {
@@ -11,11 +12,9 @@ class Options
     public function validationRule( $request ) 
     {
         $inputs     =   $request->except([ '_token' ]);
+        $fields     =   new DashboardFields;
         if ( Helper::RefererRouteIs( 'dashboard.settings.nexopos.general' ) ) {
-            Helper::PushValidationRule([
-                'test_field'  =>  'required|min:20',
-                'textarea'  =>  'required|email'
-            ]);
+            Helper::UseFieldsValidation( $fields->generalSettings() );
         }
     }
 }

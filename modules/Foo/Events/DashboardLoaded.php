@@ -17,7 +17,7 @@ class DashboardLoaded
     {
         $Foo                =   new \StdClass;
         $Foo->namespace     =   'foo';
-        $Foo->text          =   __( 'Foo' );
+        $Foo->text          =   __( 'Foo Index' );
         $Foo->href          =   route( 'dashboard.foo.index');
         $Foo->icon          =   'build';
 
