@@ -20,7 +20,7 @@ trait Validation
      * @param object<Field>
      * @return void
      */
-    static function UseFieldsValidation( $fields )
+    static function UseFieldsValidation( $fields, $namespace = 'options' )
     {
         $validation     =   [];
         foreach( $fields as $field ) {
@@ -28,6 +28,6 @@ trait Validation
                 $validation[ $field->name ]   =   $field->validation;
             }
         }
-        self::PushValidationRule( $validation );
+        self::PushValidationRule( $validation, $namespace );
     }
 }

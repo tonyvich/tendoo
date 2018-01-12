@@ -10,7 +10,11 @@ return [
         'not-authenticated'     =>  'login.index' 
     ],
     'validations'    => [
-        'options'       =>  []
+        'options'       =>  [],
+        'crud'          =>  [],
     ],
     'name'          =>  'Tendoo CMS',
+    'pagination'    =>  [
+        'users'         =>  2
+    ],
 ];

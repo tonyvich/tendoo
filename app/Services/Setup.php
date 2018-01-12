@@ -37,8 +37,9 @@ class Setup
         ]]);
 
         try {
-            DB::connection()->getPdo();
+            $DB     =   DB::connection()->getPdo();
         } catch (\Exception $e) {
+
             switch( $e->getCode() ) {
                 case 2002   :   
                     $message =  [

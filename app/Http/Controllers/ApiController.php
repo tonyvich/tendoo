@@ -17,7 +17,7 @@ class ApiController extends Controller
         /**
          * Load route and pass resource loaded
          */
-        $details    =   Event::fire( 'before.loadingApi', $resource );
+        $details    =   Event::fire( 'before.loading.api', $resource );
         
         if ( count( $details ) == 1 ) {
 
@@ -58,7 +58,7 @@ class ApiController extends Controller
         /**
          * Load route and pass resource loaded
          */
-        $details    =   Event::fire( 'before.loadingApi', $resource );
+        $details    =   Event::fire( 'before.loading.api', $resource );
         if ( $details ) {
             $model  =   $details->model::find( $id );
             return $model->first();

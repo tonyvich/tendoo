@@ -111,4 +111,18 @@ class User extends Authenticatable
     {
         return self::setAs( $this->user_id, $role );
     }
+    
+    /**
+     * mutator
+     * mutate active field
+     * @param string value
+     * @return boolean
+     */
+    public function getActiveAttribute( $value ) 
+    {
+        if ( $value == '1' ) {
+            return true;
+        }
+        return false;
+    }
 }

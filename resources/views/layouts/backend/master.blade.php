@@ -19,5 +19,5 @@
     </script>
 @endsection
 @include( 'partials.shared.header' )
-    @yield( 'layouts.backend.master.body' )
+    @yield( 'layouts.backend.master.body' ) 
 @include( 'partials.shared.footer' )

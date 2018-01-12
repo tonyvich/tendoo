@@ -63,7 +63,7 @@ class SetupController extends Controller
         $this->setup->runMigration( $request );
 
         // fire event when database is installed
-        Event::fire( 'setup.app-details', $request );
+        Event::fire( 'after.setup.app', $request );
 
         return redirect()->route( 'login.index' );
     }

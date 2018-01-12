@@ -32,4 +32,23 @@ trait ArrayHelper {
         }
         return [];
     }
+
+    /**
+     * Collection to options
+     * @param array collection of Eloquent results
+     * @return array of options
+     */
+    static function toOptions( $collections, $config )
+    {
+        $result         =   [];
+        if ( $collections ) {
+            foreach ( $collections as $collection ) {
+                $id     =   $config[0];
+                $name   =   $config[1];
+                $result[ $collection->$id ]   =  $collection->$name; 
+            }
+            return $result;
+        }
+        return [];
+    }
 }

@@ -18,8 +18,9 @@ Route::get('/', function () {
 Route::middleware([ 'app.installed' ])->group( function(){
     Route::get( '/dashboard', 'DashboardController@index' )->name( 'dashboard.index' );
     Route::get( '/dashboard/users', 'DashboardController@usersList' )->name( 'dashboard.users.list' );
-    Route::get( '/dashboard/users/create', 'DashboardController@users_create' )->name( 'dashboard.users.create' );
-    Route::get( '/dashboard/users/{id}', 'DashboardController@users_edit' )->name( 'dashboard.users.edit' );
+    Route::get( '/dashboard/users/create', 'DashboardController@createUser' )->name( 'dashboard.users.create' );
+    Route::get( '/dashboard/users/profile', 'DashboardController@showProfile' )->name( 'dashboard.users.profile' );
+    Route::get( '/dashboard/users/{user}', 'DashboardController@editUser' )->name( 'dashboard.users.edit' );
     Route::get( '/dashboard/modules', 'DashboardController@modulesList' )->name( 'dashboard.modules.list' );
     Route::get( '/dashboard/modules/upload', 'DashboardController@uploadModule' )->name( 'dashboard.modules.upload' );
     Route::get( '/dashboard/modules/enable/{namespace}', 'DashboardController@enableModule' )->name( 'dashboard.modules.enable' );
@@ -34,8 +35,12 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::get( '/logout', 'AuthController@LogoutIndex' )->name( 'logout.index' );
     Route::get( '/register', 'AuthController@registerIndex' )->name( 'register.index' )->middleware( 'expect.unlogged' );
     
+    Route::post( '/dashboard/users/profile', 'DashboardController@showProfile' )->name( 'dashboard.users.post' );
     Route::post( '/dashboard/modules/post', 'DashboardController@postModule' )->name( 'dashboard.modules.post' );
     Route::post( '/dashboard/options/post', 'DashboardController@postOptions' )->name( 'dashboard.options.post' );
+    Route::post( '/dashboard/crud/post/{namespace}', 'DashboardController@crudPost' )->name( 'dashboard.crud.post' );
+    Route::post( '/dashboard/crud/put/{namespace}/{id}', 'DashboardController@crudPut' )->name( 'dashboard.crud.put' );
+
     Route::post( '/login/post', 'AuthController@postLogin' )->name( 'login.post' )->middleware( 'expect.unlogged' );
     Route::post( '/register/post', 'AuthController@postLogin' )->name( 'register.post' )->middleware( 'expect.unlogged' );
 
@@ -55,6 +60,8 @@ Route::middleware([ 'app.notInstalled' ])->group( function(){
     Route::post( '/do-setup/post/database', 'SetupController@post_database' )->name( 'setup.post.database' );
     Route::post( '/do-setup/post/app-details', 'SetupController@post_appdetails' )->name( 'setup.post.app-details' );
 });
+
+Route::get( '/errors/{code}', 'ErrorsController@show' )->name( 'errors' );
 
 Route::get( '/mail', function(){
     return new App\Mail\SetupComplete();

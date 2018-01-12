@@ -39,7 +39,7 @@ class OptionsRequest extends FormRequest
          * Options validation rules can be registered using the 
          * App\Service\Helper::(trait)PushValidationRule method
          */
-        Event::Fire( 'before.validatingOptions', $this );
+        Event::Fire( 'before.validating.options', $this );
 
         return config( 'tendoo.validations.options' );
     }

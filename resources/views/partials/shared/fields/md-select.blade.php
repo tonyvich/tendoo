@@ -10,14 +10,16 @@
         @php
         $index          =   0;
         $selectedIndex  =   0;
+        $selectedValue  =   '';
         @endphp
         @foreach( ( array ) @$field->options as $value => $text )
             <li data-value="{{ $value }}" class="mdc-list-item" role="option" tabindex="0">
                 {{ $text }}
             </li>
-            @if( $field->value == $value )
+            @if( @$field->value == $value )
                 @php
                 $selectedIndex  =   $index;
+                $selectedValue  =   $value;
                 @endphp
             @endif
             @php
@@ -33,6 +35,7 @@
 </div>
 @else
 <small class="form-text text-muted">{{ @$field->description }}</small>
+<br>
 @endif
 <input type="hidden" name="{{ $field->name }}">
 <script>
@@ -48,6 +51,7 @@ jQuery( document ).ready( function(){
     })
 
     selectFieldComponent.selectedIndex	    =   {{ $selectedIndex }};
+    $( '[name="{{ $field->name }}"]' ).val( '{{ $selectedValue }}' );
 });
 </script>
 @endif

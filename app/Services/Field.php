@@ -4,11 +4,14 @@ namespace App\Services;
 use App\Services\Fields\SetupFields;
 use App\Services\Fields\AuthFields;
 use App\Services\Fields\GeneralSettingsFields;
+use App\Services\Fields\UsersFields;
+
 class Field
 {
     use SetupFields,
         AuthFields,
-        GeneralSettingsFields;
+        GeneralSettingsFields,
+        UsersFields;
 
     /**
      * Build Self for validation

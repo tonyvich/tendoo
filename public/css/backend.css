@@ -153,8 +153,7 @@ table.table .checkbox label .checkbox-decorator, table.table label.checkbox-inli
     background: #FFF;
 }
 .content-body .container-fluid {
-    position: relative;
-    top: -89px;
+    margin-top: -89px;
 }
 .box-title {
     padding: 1.30rem!important;

@@ -83,7 +83,6 @@ class Handler extends ExceptionHandler
                     ], 401 );
                 }
             } else {
-                
                 if( $exception instanceof QueryException ) {
                     return response()->view( 'errors.db-error', [ 'e' => $exception ] );
                 }

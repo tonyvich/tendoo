@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Page;
 use App\Services\Options;
 use App\Services\Modules;
-use Illuminate\Support\Facades\Event;
 use App\Services\Helper;
-use App\Http\Requests\OptionsRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\OptionsRequest;
+use App\Http\Requests\CrudPostRequest;
+use App\Http\Requests\CrudPutRequest;
 
 class DashboardController extends Controller
 {
@@ -58,13 +60,13 @@ class DashboardController extends Controller
     public function enableModule( $namespace )
     {
         // @todo check if the user has the right to perform this action.
-        Event::fire( 'before.enablingModule', $namespace );
+        Event::fire( 'before.enabling.module', $namespace );
 
         $result     =   $this->modules->enable( $namespace );
 
         if ( $result[ 'code' ] == 'module_enabled' ) {
             // when the module has been enabled
-            Event::fire( 'after.enablingModule', $result[ 'module' ] );
+            Event::fire( 'after.enabling.module', $result[ 'module' ] );
 
             return redirect()->route( 'dashboard.modules.list' )->with([
                 'status'    =>  'success',
@@ -86,13 +88,13 @@ class DashboardController extends Controller
     public function disableModule( $namespace )
     {
         // @todo check if the user has the right to perform this action.
-        Event::fire( 'before.disablingModule', $namespace );
+        Event::fire( 'before.disabling.module', $namespace );
 
         $result     =   $this->modules->disable( $namespace );
 
         if ( $result[ 'code' ] == 'module_disabled' ) {
             // when the module has been enabled
-            Event::fire( 'after.disablingModule', $result[ 'module' ] );
+            Event::fire( 'after.disabling.module', $result[ 'module' ] );
 
             return redirect()->route( 'dashboard.modules.list' )->with([
                 'status'    =>  'success',
@@ -139,7 +141,7 @@ class DashboardController extends Controller
      */
     public function postModule( Request $request )
     {
-        Event::fire( 'before.uploadModule', $request );
+        Event::fire( 'before.uploading.module', $request );
 
         $result     =   $this->modules->upload( $request->file( 'module' ) );
 
@@ -148,12 +150,14 @@ class DashboardController extends Controller
          */
         switch ( $result[ 'code' ] ) {
             case 'invalid_module' :
+                Event::fire( 'after.uploading.module', $result );
                 return redirect()->route( 'dashboard.modules.list' )->with([
                     'status'    =>  'danger',
                     'message'   =>  __( 'The zip file is not a valid module.' )
                 ]);
             break;
             case 'old_module' : 
+                Event::fire( 'after.uploading.module', $result );
                 return redirect()->route( 'dashboard.modules.list' )->with([
                     'status'    =>  'info',
                     /**
@@ -163,12 +167,14 @@ class DashboardController extends Controller
                 ]);
             break;
             case 'valid_message':
+                Event::fire( 'after.uploading.module', $result );
             return redirect()->route( 'dashboard.modules.list' )->with([
                 'status'    =>  'success',
                 'message'   =>  __( 'the module has been installed.' )
             ]);
             break;
             default:
+                Event::fire( 'after.uploading.module', $result );
                 return redirect()->route( 'dashboard.modules.list' )->with([
                     'status'    =>  'info',
                     'message'   =>  __( 'An unexpected error occured.' )
@@ -285,34 +291,176 @@ class DashboardController extends Controller
     public function usersList()
     {
         $model          =   'App\Models\User';
-        $entries        =   $model::all();
-
-        $resource       =   'users';
-        $columns        =   [
-            [ 'name'    =>  'username',     'text'  =>  __( 'User Name' ) ],
-            [ 'name'    =>  'email',        'text'  =>  __( 'Email' ) ],
-            [ 'name'    =>  'role',         'text'  =>  __( 'Role' ) ],
-            [ 'name'    =>  'created_at',   'text'  =>  __( 'Created At' ) ],
-            [ 'name'    =>  'active',       'text'  =>  __( 'Active' ) ]
-        ];
-
-        $actions        =   [
-            'edit'      =>  function( $user ) {
-                return [
-                    'text'  =>  __( 'Edit' ),
-                    'url'   =>  url()->route( 'dashboard.users.edit', [ 'id' => $user->id ] )
-                ];
-            },
-            'delete'    =>  function( $user ) {
-                return [
-                    'type'  =>  'DELETE',
-                    'url'   =>  url()->route( 'dashboard.users.delete', [ 'id' => $user->id ]),
-                    'text'  =>  __( 'Delete' )
-                ];
-            }
-        ];
-
+        $entries        =   $model::paginate( 20 ); // this should be dynamic
         Page::setTitle( __( 'Users' ) );
-        return view( 'components.backend.dashboard.users-list', compact( 'columns', 'actions', 'resource' ) );
+        return view( 'components.backend.dashboard.users-list', compact( 'entries' ) );
+    }
+
+    /**
+     * Create users
+     * @param void
+     * @return view
+     */
+    public function createUser()
+    {
+        $crud       =   [
+            'namespace'     =>  'system.users'
+        ];
+
+        Page::setTitle( __( 'Create a user' ) );
+        return view( 'components.backend.dashboard.create-user', compact( 'crud' ) );
+    }
+
+    /**
+     * Edit user
+     * @param int user id
+     * @return view
+     */
+    public function editUser( User $user )
+    {
+        /**
+         * If the user who attempt to edit is the currently logged user.
+         * We should redirect him to his profile
+         * where he can't edit his role
+         */
+        if ( Auth::id() == $user->id ) {
+            return redirect()->route( 'dashboard.users.profile' );
+        }
+
+        $crud       =   [
+            'namespace'     =>  'system.users'
+        ];
+
+        Page::setTitle( __( 'Create a user' ) );
+        return view( 'components.backend.dashboard.edit-user', compact( 'crud', 'user' ) );
+    }
+
+    /**
+     * Show current logged user profile
+     * @param void
+     * @return view
+     */
+    public function showProfile()
+    {
+        
+    }
+
+    /**
+     * Dashboard Crud POST
+     * receive and treat POST request for CRUD Resource
+     * @param void
+     * @return void
+     */
+    public function crudPost( String $namespace, CrudPostRequest $request )
+    {
+        $response   =   Event::fire( 'before.posting.crud', $namespace );
+
+        /**
+         * In case nothing handle this crud
+         */
+        if ( empty( $response ) ) {
+            return redirect()->route( 'errors', [ 'code' => 'unhandled-crud-resource' ]);
+        }
+
+        $resource   =   $response[0];
+        $entry      =   new $resource[ 'model' ];
+
+        foreach ( $request->all() as $name => $value ) {
+
+            /**
+             * If submitted field are part of fillable fields
+             */
+            if ( in_array( $name, $resource[ 'fillable' ] ) ) {
+
+                /**
+                 * We might give the capacity to filter fields 
+                 * before storing. This can be used to apply specific formating to the field.
+                 */
+                if ( is_callable( @$resource[ 'filter' ] ) ) {
+                    $filter     =   $resource[ 'filter' ];
+                    $entry->$name   =   $filter( $name, $value );
+                } else {
+                    $entry->$name   =   $value;
+                }
+            }
+        }
+
+        $entry->save();
+
+        /**
+         * Once the request is done, 
+         * we might redirect the user to the users list page
+         */
+
+        /**
+         * @todo adding a link to edit the new entry
+         */
+
+        return redirect()->route( $resource[ 'route' ] )->with([
+            'status'    =>  'success',
+            'message'   =>  __( 'An new entry has been successfully created.' )
+        ]);
+    }
+
+    /**
+     * Dashbaord CRUD PUT
+     * receive and treat a PUT request for CRUD resource
+     * @param string resource namespace
+     * @param int primary key
+     * @param object request : CrudPutRequest
+     * @return void
+     */
+    public function crudPut( String $namespace, $entry, CrudPutRequest $request ) 
+    {
+        /**
+         * Trigger event before submitting put request for CRUD resource
+         */
+        $response   =   Event::fire( 'before.editing.crud', $namespace );
+
+        /**
+         * In case nothing handle this crud
+         */
+        if ( empty( $response ) ) {
+            return redirect()->route( 'errors', [ 'code' => 'unhandled-crud-resource' ]);
+        }
+
+        $resource   =   $response[0];
+        $entry      =   $resource[ 'model' ]::find( $entry );
+
+        foreach ( $request->all() as $name => $value ) {
+
+            /**
+             * If submitted field are part of fillable fields
+             */
+            if ( in_array( $name, $resource[ 'fillable' ] ) ) {
+
+                /**
+                 * We might give the capacity to filter fields 
+                 * before storing. This can be used to apply specific formating to the field.
+                 */
+                if ( is_callable( @$resource[ 'filter' ] ) ) {
+                    $filter     =   $resource[ 'filter' ];
+                    $entry->$name   =   $filter( $name, $value );
+                } else {
+                    $entry->$name   =   $value;
+                }
+            }
+        }
+
+        $entry->save();
+
+        /**
+         * Once the request is done, 
+         * we might redirect the user to the users list page
+         */
+
+        /**
+         * @todo adding a link to edit the new entry
+         */
+
+        return redirect()->route( $resource[ 'route' ] )->with([
+            'status'    =>  'success',
+            'message'   =>  __( 'An new entry has been successfully created.' )
+        ]);
     }
 }
