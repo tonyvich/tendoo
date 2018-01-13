@@ -1,11 +1,5 @@
 var TendooTable     =   new Vue({
     el      :   '#tendoo-table',
-    data    :   {
-        columns     :   table.columns,
-        entries     :   [],
-        actions     :   [],
-        url         :   table.url
-    },
     methods: {
         /**
          * delete
@@ -18,7 +12,7 @@ var TendooTable     =   new Vue({
             
             axios({
                 method  :   'delete',
-                url     :   $( element ).attr( 'data-url' )
+                url     :   $( element ).attr( 'href' )
             }).then( ( content ) => {
                 $( parent ).fadeOut(500, function() {
                     $( this ).remove();
@@ -28,22 +22,9 @@ var TendooTable     =   new Vue({
                     $( this ).remove();
                 })
             })
-        },
-
-        /**
-         * Load entries
-         * @param void
-         * @return void
-         */
-        loadEntries() {
-            axios({
-                url     :   this.url
-            }).then( result => {
-                this.entries    =   result.data.entries;
-            })
+            event.preventDefault();
         }
     },
-    mounted() {
-        this.loadEntries();
+    mounted()  {
     }
 })

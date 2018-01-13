@@ -165,3 +165,18 @@ table.table .checkbox label .checkbox-decorator, table.table label.checkbox-inli
 .module-card .card:first-child {
     border-right: solid 1px #e6e6e6;
 }
+
+/**
+ * Material Dashboard with material lite
+ *
+**/
+
+.mdl-layout .mdl-layout__drawer nav.mdl-navigation > a.mdl-navigation__link {
+    padding: 16px 16px;
+}
+.mdl-layout .mdl-layout__drawer nav.mdl-navigation > a.mdl-navigation__link span i {
+    margin-right: 16px;
+}
+.mdl-layout .mdl-layout__drawer nav.mdl-navigation > a.mdl-navigation__link:hover {
+    text-decoration: unset;
+}

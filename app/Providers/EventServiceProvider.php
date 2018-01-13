@@ -51,6 +51,12 @@ class EventServiceProvider extends ServiceProvider
                         'title'     =>  __( 'Unhandled Crud' )
                     ];
                 break;
+                case 'unhandled-crud-delete-resource' : 
+                    return [
+                        'message'   =>  __( 'This CRUD resource on DELETE method, is either not handled by the system nor by any available module.' ),
+                        'title'     =>  __( 'Unhandled Crud' )
+                    ];
+                break;
                 default: 
                     return [
                         'message'   =>  __( 'Unexpected error code has been send to the system' ),

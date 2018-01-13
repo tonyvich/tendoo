@@ -316,23 +316,66 @@ class DashboardController extends Controller
      * @param int user id
      * @return view
      */
-    public function editUser( User $user )
+    public function editUser( User $entry )
     {
         /**
          * If the user who attempt to edit is the currently logged user.
          * We should redirect him to his profile
          * where he can't edit his role
          */
-        if ( Auth::id() == $user->id ) {
+        if ( Auth::id() == $entry->id ) {
             return redirect()->route( 'dashboard.users.profile' );
         }
 
-        $crud       =   [
-            'namespace'     =>  'system.users'
-        ];
-
         Page::setTitle( __( 'Create a user' ) );
-        return view( 'components.backend.dashboard.edit-user', compact( 'crud', 'user' ) );
+        return view( 'components.backend.dashboard.edit-user', [ 'namespace' => 'system.users' ]);
+    }
+
+    /**
+     * CRUD delete we expect this request to be 
+     * provided by an Ajax Request
+     * @param void
+     * @return view
+     */
+    public function crudDelete( $namespace, $id )
+    {
+        /**
+         * Catch event before deleting user
+         */
+        $resource    =   Event::fire( 'before.deleting.crud', $namespace, $id );
+
+        if ( empty( $resource ) ) {
+            return response([
+                'status'    =>  'danger',
+                'message'   =>  __( 'The crud resource is either not handled by the system or by any installed module.' )
+            ], 403 );
+        }
+
+        /**
+         * Run the filter before deleting
+         */
+        if ( is_callable( $resource[ 'beforeDelete' ] ) ) {
+
+            /**
+             * the callback should return an empty value to proceed.
+             */
+            if( ! empty( $response = $resource[ 'beforeDelete' ]( $namespace, $id ) ) ) {
+                return $response;
+            }
+        }
+
+        /**
+         * We'll retreive the model and delete it
+         */
+        $model          =   $resource[ 'model' ];
+        $model::find( $id )->delete();
+
+        $resource    =   Event::fire( 'after.deleting.crud', $namespace, $id );
+
+        return [
+            'status'    =>  'success',
+            'message'   =>  __( 'The entry has been successfully delete.' )
+        ];
     }
 
     /**

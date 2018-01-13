@@ -1,70 +1,83 @@
+@section( 'partials.shared.footer' )
+    @parent
+    <script src="{{ asset( 'js/dashboard/table.vue.js' ) }}"></script>
+@endsection
 <div class="card" id="tendoo-table">
     <div class="card-header p-0 d-flex justify-content-between">
         <h5 class="box-title">{{ @$crud[ 'title' ] ? $crud[ 'title' ] : __( 'Unammed Table' ) }}</h5>
     </div>
     <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-            <thead>
-                <tr>
-                    <th width="10">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox">
-                            </label>
-                        </div>
-                    </th>
-                    @foreach( ( array ) @$columns as $name => $column )
-                    <th class="column-{{ $name }}">{{ $column[ 'text' ] }}</th>
-                    @endforeach
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if( @$entries )
-                    @foreach( $entries as $entry )
+        <form class="mb-0" action="" method="post">
+            <table class="table table-striped mb-0">
+                <thead>
                     <tr>
-                        <td>
+                        <th width="10">
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox">
                                 </label>
                             </div>
-                        </td>
-
-                        @foreach( ( array ) @$columns as $name => $column )
-                            @if ( is_callable( @$column[ 'filter' ] ) )
-                            <!-- Hopfully PHP 7.x let us acheive this -->
-                            <th class="column-{{ $name }}">{{ $column[ 'filter' ]( array_get( $entry, $name ) ) }}</th>
-                            @else 
-                            <th class="column-{{ $name }}">{{ array_get( $entry, $name ) }}</th>
-                            @endif
-                        @endforeach
-                        
-                        <th class="p-2" width="100">
-                            <div class="dropdown show">
-                                <a class="btn mb-0 btn-raised btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ __( 'Options' ) }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    @foreach( $actions as $name => $action )
-                                    @php
-                                        $config    =   $action( $entry );
-                                    @endphp
-                                    <a href="{{ $config[ 'url' ] }}" class="dropdown-item">{{ $config[ 'text' ] }}</a>
-                                    @endforeach
-                                </div>
-                            </div>
                         </th>
+                        @foreach( ( array ) @$columns as $name => $column )
+                        <th class="column-{{ $name }}">{{ $column[ 'text' ] }}</th>
+                        @endforeach
+                        <th></th>
                     </tr>
-                    @endforeach
-                @else
-                <tr>
-                    <td colspan="{{ count( @$columns ) + 2 }}" class="text-center">{{ __( 'No entry available' ) }}</td>
-                </tr>
-                @endif
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @if( @$entries )
+                        @foreach( $entries as $entry )
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="entry_id[]" value="{{ $entry->id }}">
+                                    </label>
+                                </div>
+                            </td>
+
+                            @foreach( ( array ) @$columns as $name => $column )
+                                @if ( is_callable( @$column[ 'filter' ] ) )
+                                <!-- Hopfully PHP 7.x let us acheive this -->
+                                <th class="column-{{ $name }}">{{ $column[ 'filter' ]( array_get( $entry, $name ) ) }}</th>
+                                @else 
+                                <th class="column-{{ $name }}">{{ array_get( $entry, $name ) }}</th>
+                                @endif
+                            @endforeach
+                            
+                            <th class="p-2" width="100">
+                                <div class="dropdown show">
+                                    <a class="btn mb-0 btn-raised btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ __( 'Options' ) }}
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        @foreach( $actions as $name => $action )
+                                            @php
+                                                $config    =   $action( $entry );
+                                            @endphp
+                                            @if ( $config )
+                                                @if  ( $name == 'delete' )
+                                                    <a @click="deleteEntry( {{ $entry->id }}, $event )" href="{{ $config[ 'url' ] }}" class="dropdown-item">{{ $config[ 'text' ] }}</a>
+                                                @else
+                                                    <a href="{{ $config[ 'url' ] }}" class="dropdown-item">{{ $config[ 'text' ] }}</a>
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        @endforeach
+                    @else
+                    <tr>
+                        <td colspan="{{ count( @$columns ) + 2 }}" class="text-center">{{ __( 'No entry available' ) }}</td>
+                    </tr>
+                    @endif
+                </tbody>
+            </table>
+            <input type="hidden" name="action">
+        </form>
     </div>
     <div class="card-footer">
         @if ( @$entries )
