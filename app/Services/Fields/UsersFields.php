@@ -62,7 +62,7 @@ trait UsersFields
          * The validation should be unique according
          * to the operation
          */
-        if ( $user ) {
+        if ( is_object( $user ) ) {
             $email->validation      =   [
                 'required',
                 'email',

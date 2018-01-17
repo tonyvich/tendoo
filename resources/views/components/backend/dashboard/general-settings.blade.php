@@ -14,7 +14,7 @@
                     {{ csrf_field() }}
                     {{ route_field() }}
                     <div class="card">
-                        <div class="card-header p-3">
+                        <div class="card-header p-2-5">
                             <button type="submit" class="mb-0 btn btn-raised btn-primary">{{ __( 'Save Settings' ) }}</button>
                         </div>
                         @include( 'partials.shared.errors', [

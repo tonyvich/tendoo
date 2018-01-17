@@ -19,7 +19,7 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $subscribe    =   [
-        'App\Listeners\UsersListeners'
+        // 'App\Listeners\UsersListeners'
     ];
 
     /**
@@ -65,5 +65,10 @@ class EventServiceProvider extends ServiceProvider
                 break;
             }
         });
+
+        /**
+         * Register Crud definition
+         */
+        Event::listen( 'define.crud', 'App\Crud\Users@register' );
     }
 }

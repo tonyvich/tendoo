@@ -39,6 +39,7 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::post( '/dashboard/options/post', 'DashboardController@postOptions' )->name( 'dashboard.options.post' );
     Route::post( '/dashboard/crud/post/{namespace}', 'DashboardController@crudPost' )->name( 'dashboard.crud.post' );
     Route::post( '/dashboard/crud/put/{namespace}/{id}', 'DashboardController@crudPut' )->name( 'dashboard.crud.put' );
+    Route::post( '/dashboard/crud/bulk/{namespace}', 'DashboardController@crudBulkActions' )->name( 'dashboard.crud.bulk-actions' );
     Route::post( '/login/post', 'AuthController@postLogin' )->name( 'login.post' )->middleware( 'expect.unlogged' );
     Route::post( '/register/post', 'AuthController@postLogin' )->name( 'register.post' )->middleware( 'expect.unlogged' );
     

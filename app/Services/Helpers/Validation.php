@@ -8,7 +8,7 @@ trait Validation
      * @param array of validation rule
      * @return void
      */
-    static function PushValidationRule( $rules, $namespace = 'options' )
+    static function pushValidationRule( $rules, $namespace = 'options' )
     {
         $validation     =   config( 'tendoo.validations.' . $namespace );
         $newValidation  =   array_merge( $validation, $rules );
@@ -20,7 +20,16 @@ trait Validation
      * @param object<Field>
      * @return void
      */
-    static function UseFieldsValidation( $fields, $namespace = 'options' )
+    static function useFieldsValidation( $fields, $namespace = 'options' )
+    {
+        self::pushValidationRule( self::GetFieldValidation( $fields, $namespace ), $namespace );
+    }
+
+    /**
+     * get field validation
+     * @return array of field validation
+     */
+    static function getFieldsValidation( $fields, $namespace = 'options' )
     {
         $validation     =   [];
         foreach( $fields as $field ) {
@@ -28,6 +37,7 @@ trait Validation
                 $validation[ $field->name ]   =   $field->validation;
             }
         }
-        self::PushValidationRule( $validation, $namespace );
+        
+        return $validation;
     }
 }

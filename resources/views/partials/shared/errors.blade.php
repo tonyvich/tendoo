@@ -1,11 +1,24 @@
 @if( @$errors->has( 'status' ) )
-    <div class="alert alert-{{ $errors->first( 'status' ) }} {{ @$class }}" role="alert">
+    <div class="alert alert-{{ $errors->first( 'status' ) }} {{ @$class }} mb-0" role="alert">
         {{ $errors->first( 'message' )}}
     </div>
 @endif
 
 @if( session()->has( 'status' ) )
-    <div class="alert alert-{{ session()->get( 'status' ) }} {{ @$class }}" role="alert">
+    <div class="alert alert-{{ session()->get( 'status' ) }} {{ @$class }} mb-0" role="alert">
         {!! session()->get( 'message' ) !!}
     </div>
 @endif
+
+@if ( session()->has( 'success' ) )
+    <div class="alert alert-success {{ @$class }} mb-0" role="alert">
+        {!! session()->get( 'success' ) !!}
+    </div>
+@endif
+
+@if ( session()->has( 'danger' ) )
+    <div class="alert alert-danger {{ @$class }} mb-0" role="alert">
+        {!! session()->get( 'danger' ) !!}
+    </div>
+@endif
+

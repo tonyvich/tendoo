@@ -24,11 +24,16 @@ class CrudPutRequest extends FormRequest
      */
     public function rules()
     {
-        Event::fire( 'before.validating.crud', $this );
-                
         /**
-         * Check if there is a reply to that Event
+         * get resource defined
          */
-        return config( 'tendoo.validations.crud', []);        
+        $resource   =   @Event::fire( 'define.crud' )[0];
+
+        if ( is_object( $resource ) ) {
+            return $resource->validation_rules( $this );      
+        }
+
+        // if a resource is not defined. Let's return an empty array.
+        return [];
     }
 }

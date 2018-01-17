@@ -37,7 +37,7 @@ class OptionsRequest extends FormRequest
         
         /**
          * Options validation rules can be registered using the 
-         * App\Service\Helper::(trait)PushValidationRule method
+         * App\Service\Helper::(trait)pushValidationRule method
          */
         Event::Fire( 'before.validating.options', $this );
 

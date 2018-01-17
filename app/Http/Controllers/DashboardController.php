@@ -290,10 +290,8 @@ class DashboardController extends Controller
      */
     public function usersList()
     {
-        $model          =   'App\Models\User';
-        $entries        =   $model::paginate( 20 ); // this should be dynamic
         Page::setTitle( __( 'Users' ) );
-        return view( 'components.backend.dashboard.users-list', compact( 'entries' ) );
+        return view( 'components.backend.dashboard.users-list' );
     }
 
     /**
@@ -303,12 +301,8 @@ class DashboardController extends Controller
      */
     public function createUser()
     {
-        $crud       =   [
-            'namespace'     =>  'system.users'
-        ];
-
         Page::setTitle( __( 'Create a user' ) );
-        return view( 'components.backend.dashboard.create-user', compact( 'crud' ) );
+        return view( 'components.backend.dashboard.create-user' );
     }
 
     /**
@@ -328,7 +322,7 @@ class DashboardController extends Controller
         }
 
         Page::setTitle( __( 'Create a user' ) );
-        return view( 'components.backend.dashboard.edit-user', [ 'namespace' => 'system.users' ]);
+        return view( 'components.backend.dashboard.edit-user' );
     }
 
     /**
@@ -342,7 +336,8 @@ class DashboardController extends Controller
         /**
          * Catch event before deleting user
          */
-        $resource    =   Event::fire( 'before.deleting.crud', $namespace, $id );
+        $crud_config        =   @Event::fire( 'define.crud', $namespace, $id )[0];
+        $resource           =   new $crud_config;
 
         if ( empty( $resource ) ) {
             return response([
@@ -354,12 +349,12 @@ class DashboardController extends Controller
         /**
          * Run the filter before deleting
          */
-        if ( is_callable( $resource[ 'beforeDelete' ] ) ) {
+        if ( is_callable( $resource->before_delete ) ) {
 
             /**
              * the callback should return an empty value to proceed.
              */
-            if( ! empty( $response = $resource[ 'beforeDelete' ]( $namespace, $id ) ) ) {
+            if( ! empty( $response = $resource->before_delete( $namespace, $id ) ) ) {
                 return $response;
             }
         }
@@ -370,7 +365,7 @@ class DashboardController extends Controller
         $model          =   $resource[ 'model' ];
         $model::find( $id )->delete();
 
-        $resource    =   Event::fire( 'after.deleting.crud', $namespace, $id );
+        Event::fire( 'after.deleting.crud', $namespace, $id );
 
         return [
             'status'    =>  'success',
@@ -396,32 +391,33 @@ class DashboardController extends Controller
      */
     public function crudPost( String $namespace, CrudPostRequest $request )
     {
-        $response   =   Event::fire( 'before.posting.crud', $namespace );
+        $crud_config        =   @Event::fire( 'define.crud', $namespace )[0];
+        $resource           =   new $crud_config;
 
         /**
          * In case nothing handle this crud
          */
-        if ( empty( $response ) ) {
+        if ( empty( $resource ) ) {
             return redirect()->route( 'errors', [ 'code' => 'unhandled-crud-resource' ]);
         }
 
-        $resource   =   $response[0];
-        $entry      =   new $resource[ 'model' ];
+        $model      =   $resource->getModel();
+        $entry      =   new $model;
 
         foreach ( $request->all() as $name => $value ) {
 
             /**
              * If submitted field are part of fillable fields
              */
-            if ( in_array( $name, $resource[ 'fillable' ] ) ) {
+            if ( in_array( $name, $resource->getFillable() ) ) {
 
                 /**
                  * We might give the capacity to filter fields 
                  * before storing. This can be used to apply specific formating to the field.
                  */
-                if ( is_callable( @$resource[ 'filter' ] ) ) {
-                    $filter     =   $resource[ 'filter' ];
-                    $entry->$name   =   $filter( $name, $value );
+                if ( is_callable( @$resource->filter_post ) ) {
+                    $filter     =   $resource->filter_post;
+                    $entry->$name   =   call_user_func_array( $filter, [ $name, $value ]);
                 } else {
                     $entry->$name   =   $value;
                 }
@@ -439,14 +435,14 @@ class DashboardController extends Controller
          * @todo adding a link to edit the new entry
          */
 
-        return redirect()->route( $resource[ 'route' ] )->with([
+        return redirect()->route( $resource->getMainRoute() )->with([
             'status'    =>  'success',
             'message'   =>  __( 'An new entry has been successfully created.' )
         ]);
     }
 
     /**
-     * Dashbaord CRUD PUT
+     * Dashboard CRUD PUT
      * receive and treat a PUT request for CRUD resource
      * @param string resource namespace
      * @param int primary key
@@ -458,32 +454,33 @@ class DashboardController extends Controller
         /**
          * Trigger event before submitting put request for CRUD resource
          */
-        $response   =   Event::fire( 'before.editing.crud', $namespace );
+        $crud_config        =   @Event::fire( 'define.crud', $namespace )[0];
+        $resource           =   new $crud_config;
 
         /**
          * In case nothing handle this crud
          */
-        if ( empty( $response ) ) {
+        if ( empty( $resource ) ) {
             return redirect()->route( 'errors', [ 'code' => 'unhandled-crud-resource' ]);
         }
-
-        $resource   =   $response[0];
-        $entry      =   $resource[ 'model' ]::find( $entry );
+        
+        $model      =   $resource->getModel();
+        $entry      =   $model::find( $entry );
 
         foreach ( $request->all() as $name => $value ) {
 
             /**
              * If submitted field are part of fillable fields
+             * The field should not be null
              */
-            if ( in_array( $name, $resource[ 'fillable' ] ) ) {
+            if ( in_array( $name, $resource->getFillable() ) && $value !== null ) {
 
                 /**
                  * We might give the capacity to filter fields 
                  * before storing. This can be used to apply specific formating to the field.
                  */
-                if ( is_callable( @$resource[ 'filter' ] ) ) {
-                    $filter     =   $resource[ 'filter' ];
-                    $entry->$name   =   $filter( $name, $value );
+                if ( is_callable( @$resource->filter_put ) ) {
+                    $entry->$name   =   $resource->filter_put( $name, $value );
                 } else {
                     $entry->$name   =   $value;
                 }
@@ -501,9 +498,55 @@ class DashboardController extends Controller
          * @todo adding a link to edit the new entry
          */
 
-        return redirect()->route( $resource[ 'route' ] )->with([
+        return redirect()->route( $resource->getMainRoute() )->with([
             'status'    =>  'success',
-            'message'   =>  __( 'An new entry has been successfully created.' )
+            'message'   =>  __( 'An new entry has been successfully updated.' )
         ]);
+    }
+
+    /**
+     * CRUD Bulk Action
+     * @param string namespace
+     * @return void
+     */
+    public function crudBulkActions( String $namespace, Request $request )
+    {
+        /**
+         * Build CRUD resource
+         */
+        $crud_config        =   @Event::fire( 'define.crud', $namespace )[0];
+        $resource           =   new $crud_config;
+        
+        /**
+         * Check if an entry is selected, 
+         * else throw an error
+         */
+        if ( $request->input( 'entry_id' ) == null ) {
+            return redirect()->route( $resource->getMainRoute() )->with([
+                'status'    =>  'danger',
+                'message'   =>  __( 'You must select an entry.' )
+            ]);
+        }
+
+        if ( $request->input( 'action' ) == null ) {
+            return redirect()->route( $resource->getMainRoute() )->with([
+                'status'    =>  'danger',
+                'message'   =>  __( 'You must select an action to perform.' )
+            ]);
+        }
+
+        $response           =   $resource->bulkDelete( $request );
+        $errors             =   [];
+
+
+        if ( $response[ 'success' ] > 0 ) {
+            $errors[ 'success' ]    =   sprintf( $resource->bulkDeleteSuccessMessage, $response[ 'success' ]);
+        } 
+        
+        if ( $response[ 'danger' ] > 0 ) {
+            $errors[ 'danger' ]     =   sprintf( $resource->bulkDeleteDangerMessage, $response[ 'danger' ]);
+        }
+
+        return redirect()->route( $resource->getMainRoute() )->with( $errors );
     }
 }

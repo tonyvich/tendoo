@@ -23,6 +23,22 @@ var TendooTable     =   new Vue({
                 })
             })
             event.preventDefault();
+        },
+
+        /**
+         * Toggle Checkboxes
+         * @return void
+         */
+        toggleCheckbox( event ) {
+            if ( $( event.srcElement ).is( ':checked' ) ) {
+                $( '.entry-checkbox' ).each( function(){
+                    $( this ).prop( 'checked' , true );
+                })
+            } else {
+                $( '.entry-checkbox' ).each( function(){
+                    $( this ).prop( 'checked' , false );
+                })
+            }
         }
     },
     mounted()  {
