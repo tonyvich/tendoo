@@ -168,10 +168,17 @@ class DashboardController extends Controller
             break;
             case 'valid_message':
                 Event::fire( 'after.uploading.module', $result );
-            return redirect()->route( 'dashboard.modules.list' )->with([
-                'status'    =>  'success',
-                'message'   =>  __( 'the module has been installed.' )
-            ]);
+                return redirect()->route( 'dashboard.modules.list' )->with([
+                    'status'    =>  'success',
+                    'message'   =>  __( 'the module has been installed.' )
+                ]);
+            break;
+            case 'check_for_migration':
+                Event::fire( 'after.uploading.module', $result );
+                return redirect()->route( 'dashboard.modules.migration' )->with([
+                    'status'    =>  'success',
+                    'message'   =>  __( 'the module has been installed.' )
+                ]);
             break;
             default:
                 Event::fire( 'after.uploading.module', $result );
@@ -181,6 +188,34 @@ class DashboardController extends Controller
                 ]);
             break;
         }
+    }
+
+    /**
+     * Run migration for a specific module 
+     * @param string namespace
+     * @return view
+     */
+    public function migrateModule( $namespace )
+    {
+        $module     =   $this->modules->get( $namespace );
+        
+        if ( $module ) {
+            /**
+             * get module migrations
+             */
+            $versions  =   $this->modules->getMigrations( $namespace );
+
+            Page::setTitle( __( 'Module Migration' ) );
+            return view( 'components.backend.dashboard.module-migration', compact( 'module', 'versions' ) );
+        }
+
+        /**
+         * if the module doesn't exist, then we can redirect it
+         */
+        return redirect()->route( 'dashboard.modules.list' )->with([
+            'status'    =>  'danger',
+            'message'   =>  sprintf( __( 'The namespace <strong>%s</strong> does\'nt seems to belong to any installed module. The migration has failded.' ), $namespace )
+        ]);
     }
 
     /**

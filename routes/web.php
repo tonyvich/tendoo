@@ -27,6 +27,7 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::get( '/dashboard/modules/disable/{namespace}', 'DashboardController@disableModule' )->name( 'dashboard.modules.disable' );
     Route::get( '/dashboard/modules/delete/{namespace}', 'DashboardController@deleteModule' )->name( 'dashboard.modules.delete' );
     Route::get( '/dashboard/modules/extract/{namespace}', 'DashboardController@extractModule' )->name( 'dashboard.modules.extract' );
+    Route::get( '/dashboard/modules/migrate/{namespace}', 'DashboardController@migrateModule' )->name( 'dashboard.modules.migration' );
     Route::get( '/dashboard/settings/general', 'DashboardController@generalSettings' )->name( 'dashboard.settings.general' );
     Route::get( '/dashboard/security', 'DashboardController@security' )->name( 'dashboard.security' );
     Route::get( '/dashboard/update', 'DashboardController@update' )->name( 'dashboard.update' );

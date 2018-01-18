@@ -259,7 +259,7 @@ class Modules
                         if ( version_compare( $module[ 'version' ], $xml->version, '>=' ) ) {
                             $resultMessage   =   'old_module';
                             break;
-                        }
+                        } 
                     }
 
                     /**
@@ -270,9 +270,8 @@ class Modules
                     Storage::disk( 'modules' )->makeDirectory( ucwords( $xml->namespace ) );
 
                     /**
-                     * We're not looping to move files
+                     * We're now looping to move files
                      */
-                    
                     foreach( $files as $file ) {
                         // $realFile   =   substr( $file, strlen( $dir ) + 1 );
                         Storage::disk( 'modules' )->put( 
@@ -301,6 +300,24 @@ class Modules
             Storage::disk( 'temp-modules' )->delete( $file );
         }
 
+        
+        /**
+         * check if the module has a migration
+         */
+        $module_version_key     =   '_' . $module[ 'namespace' ] . '_version';
+        if ( $version = $this->options->get( $module_version_key ) != null ) {
+            /**
+             * the new options will be set after the migration
+             */
+            return [
+                'status'    =>  'success',
+                'code'      =>  'check_for_migration',
+                'module'    =>  $module
+            ];
+        } else {
+            $this->options->set( $module_version_key, $module[ 'version' ] );
+        }
+
         /**
          * Return result message
          */
@@ -322,9 +339,19 @@ class Modules
          * Check if module exists first
          */
         if ( $module = $this->get( $namespace ) ) {
-            // disabling module first
+            /**
+             * Disable the module first
+             */
             $this->disable( $namespace );
+            
+            /**
+             * Delete Migration version
+             */
+            $this->options->delete( '_' . $module[ 'namespace' ] . '_version' );
 
+            /**
+             * Delete module from DISK
+             */
             Storage::disk( 'modules' )->deleteDirectory( ucwords( $namespace ) );
 
             return [
@@ -405,5 +432,42 @@ class Modules
             'status'        =>  'danger',
             'code'          =>  'unknow_module'
         ];
+    }
+
+    /**
+     * get Migrations
+     * @param string module namespace
+     * @return array of version
+     */
+    public function getMigrations( $namespace )
+    {
+        $module         =   $this->get( $namespace );
+        
+        /**
+         * if module exists
+         */
+        if ( $module ) {
+            $lastVersion        =   $this->options->get( '_' . $module[ 'namespace' ] . '_version' );
+            $currentVersion     =   $module[ 'version' ];
+            $directories        =   Storage::disk( 'modules' )->directories( ucwords( $module[ 'namespace' ] ) . '/Migrations/' );
+            $version_names      =   [];
+
+            foreach( $directories as $dir ) {
+                $version        =   basename( $dir );
+
+                /**
+                 * the last version should be lowed that the looped versions
+                 * the current version should greather or equal to the looped versions
+                 */
+                if ( 
+                    version_compare( $lastVersion, $version, '<' ) && 
+                    version_compare( $currentVersion, $version, '>=' )
+                ) {
+                    $version_names[]    =   $version;
+                }
+            }
+            return $version_names;
+        }
+        return [];
     }
 }

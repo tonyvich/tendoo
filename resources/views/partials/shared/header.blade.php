@@ -9,5 +9,8 @@
     @include( 'partials.shared.header-css' )
     @include( 'partials.shared.header-js' )
     @yield( 'partials.shared.head' )
+    <script>
+    var tendoo      =   new Object;
+    </script>
 </head>
 <body>
