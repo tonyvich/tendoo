@@ -97,18 +97,16 @@ aside#sidebar-menu {
 }
 
 aside#sidebar-menu>ul .list-group-item > a {
-    border-bottom: 1px solid rgba(0,0,0,.12);
     width: 100%;
     margin:0px;
     padding: 0.8rem;
     color: #333;
-}
-aside#sidebar-menu>ul {
-    border-top: 1px solid rgba(0,0,0,.12);
+    font-size: 15px;
 }
 
+
 aside#sidebar-menu>ul .list-group-item:hover {
-    background: rgba(255, 255, 255, 0.27);
+    background: rgba(255, 255, 255, 0.5);
 }
 aside#sidebar-menu>ul .list-group-item:hover a {
     text-decoration: none;
@@ -129,6 +127,10 @@ aside#sidebar-menu .sub-menu {
 }
 aside#sidebar-menu .list-group-item ul {
     display: none;
+}
+
+aside#sidebar-menu .sub-menu li a span > span {
+    margin-left: 32px;
 }
 
 aside#sidebar-menu .list-group-item.active-menu ul {

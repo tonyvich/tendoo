@@ -262,6 +262,9 @@ class Users extends Crud
             ],
             'create'    =>  [
                 [ 'href'    =>  route( 'dashboard.users.list' ), 'text' => __( 'Return' ), 'class' => 'btn btn-raised btn-secondary' ]
+            ],
+            'edit'      =>  [
+                [ 'href'    =>  route( 'dashboard.users.list' ), 'text' => __( 'Return' ), 'class' => 'btn btn-raised btn-secondary' ]
             ]
         ];
     }

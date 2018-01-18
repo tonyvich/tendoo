@@ -22,7 +22,7 @@ trait Validation
      */
     static function useFieldsValidation( $fields, $namespace = 'options' )
     {
-        self::pushValidationRule( self::GetFieldValidation( $fields, $namespace ), $namespace );
+        self::pushValidationRule( self::getFieldsValidation( $fields, $namespace ), $namespace );
     }
 
     /**

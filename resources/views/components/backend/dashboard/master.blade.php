@@ -13,7 +13,7 @@
         </aside>
         <div id="app-body" class="align-items-stretch h-100 flex-column d-flex">
             @include( 'partials.backend.dashboard.navbar' )
-                <div class="h-100 app-body-container {{ @$parent_class ? $parent_class : 'p-3' }}">
+            <div class="h-100 app-body-container {{ @$parent_class ? $parent_class : 'p-3' }}">
                 @yield( 'components.backend.dashboard.master.body' )
             </div>
         </div>

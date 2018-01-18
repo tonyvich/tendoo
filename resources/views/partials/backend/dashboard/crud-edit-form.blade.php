@@ -14,7 +14,7 @@
     @include( 'partials.shared.page-title', [
         'title'         =>  @$resource->edit_title ? $resource->edit_title : __( 'Undefined Page' ),
         'description'   =>  @$resource->edit_description ? $resource->edit_description : __( 'Undefined Description' ),
-        'links'         =>  @$resource->edit_links ? $resource->edit_links : []
+        'links'         =>  $resource->getLinks()[ 'edit' ]
     ])
     <div class="content-body">
         <div class="container-fluid pt-3 p-4">
