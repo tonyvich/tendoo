@@ -53,7 +53,13 @@ class Menus
                 $menu->childrens   =   [];
             }
 
-            $menu->childrens[]   =   $menus;
+            if ( is_array( $menus ) ) {
+                foreach ( $menus as $_menu ) {
+                    $menu->childrens[]   =   $_menu;
+                }
+            } else {
+                $menu->childrens[]   =   $menus;
+            }
         }
     }
 

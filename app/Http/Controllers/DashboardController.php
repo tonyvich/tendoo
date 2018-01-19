@@ -219,6 +219,16 @@ class DashboardController extends Controller
     }
 
     /**
+     * Run Migration
+     * @param string namespace
+     * @return string json
+     */
+    public function runMigration( Request $request )
+    {
+        return $request->all();
+    }
+
+    /**
      * Delete Module
      */
     public function deleteModule( $namespace )
@@ -298,13 +308,21 @@ class DashboardController extends Controller
             }
         }
 
+        $response   =   [
+            'status'    =>  'success',
+            'message'   =>  __( 'The options has been saved.' )
+        ];
+        
         /**
          * Redirect to previous route
          */
-        return redirect()->route( $request->input( '_route' ) )->with([
-            'status'    =>  'success',
-            'message'   =>  __( 'The options has been saved.' )
-        ]);
+        if ( $request->ajax() ) {
+            return $response;
+        } else {
+            return redirect()
+                ->route( $request->input( '_route' ) )
+                ->with( $response );
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <module>
     <namespace>Foo</namespace>
-    <version>1.0</version>
+    <version>3.0</version>
     <author>Blair Jersyer</author>
     <name>Foo module</name>
 </module>

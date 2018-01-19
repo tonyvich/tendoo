@@ -166,6 +166,11 @@ class Options
             return $options;
 
         } else {
+            /**
+             * if keys are saved to lowercase, then we should retreive using lowercase as well
+             */
+            $key    =   strtolower( $key );
+
             if( preg_match( '/(.*)\[(\d)\]/', $key, $result ) ) {
                 if( @self::$options[ $result[1] ] != null ) {
                     return self::$options[ $result[1] ][ $result[2] ];

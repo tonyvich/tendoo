@@ -32,8 +32,10 @@ var TendooAsideMenu     =   new Vue({
                 $( parent ).toggleClass( 'active-menu' );
 
                 if ( $( parent ).hasClass( 'active-menu' ) ) {
+                    $( parent ).removeClass( 'close-menu' );
                     $( parent ).find( '.arrow' ).html( 'keyboard_arrow_up' );
                 } else {
+                    $( parent ).addClass( 'close-menu' );
                     $( parent ).find( '.arrow' ).html( 'keyboard_arrow_down' );
                 }
 

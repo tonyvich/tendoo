@@ -26,6 +26,11 @@ class DashboardLoaded
         $Bar->text          =   __( 'Bar' );
         $Bar->href          =   route( 'dashboard.bar.index');
         $Bar->icon          =   'build';
+        
+        $Rab                =   new \StdClass;
+        $Rab->namespace     =   'rab';
+        $Rab->text          =   __( 'Rab' );
+        $Rab->href          =   route( 'dashboard.bar.index');
 
         
         $settings               =   new \StdClass;
@@ -42,6 +47,6 @@ class DashboardLoaded
         $this->menus->addAfter( 'dashboard', $Foo );
         $this->menus->addAfter( 'foo', $Bar );
         $this->menus->addAfter( 'foo', $settings );
-        $this->menus->addTo( 'nexopos.settings', $nexoposGeneral );
+        $this->menus->addTo( 'nexopos.settings', [ $nexoposGeneral, $Rab ] );
     }
 }

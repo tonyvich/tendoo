@@ -10,7 +10,14 @@
     @include( 'partials.shared.header-js' )
     @yield( 'partials.shared.head' )
     <script>
-    var tendoo      =   new Object;
+    var tendoo                      =   new Object;
+        tendoo.url                  =   new Object;
+        tendoo.url.base             =   '{{ url('') }}';
+        tendoo.url.dashboard        =   '{{ url('dashboard') }}';
+        tendoo.url.postOptions      =   '{{ route( 'dashboard.options.post' ) }}';
+
+        // let axios to be recognized as Ajax Request
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     </script>
 </head>
 <body>

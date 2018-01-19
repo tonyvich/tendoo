@@ -27,7 +27,7 @@ Route::middleware([ 'app.installed' ])->group( function(){
     Route::get( '/dashboard/modules/disable/{namespace}', 'DashboardController@disableModule' )->name( 'dashboard.modules.disable' );
     Route::get( '/dashboard/modules/delete/{namespace}', 'DashboardController@deleteModule' )->name( 'dashboard.modules.delete' );
     Route::get( '/dashboard/modules/extract/{namespace}', 'DashboardController@extractModule' )->name( 'dashboard.modules.extract' );
-    Route::get( '/dashboard/modules/migrate/{namespace}', 'DashboardController@migrateModule' )->name( 'dashboard.modules.migration' );
+    Route::get( '/dashboard/modules/migration/{namespace}', 'DashboardController@migrateModule' )->name( 'dashboard.modules.migration' );
     Route::get( '/dashboard/settings/general', 'DashboardController@generalSettings' )->name( 'dashboard.settings.general' );
     Route::get( '/dashboard/security', 'DashboardController@security' )->name( 'dashboard.security' );
     Route::get( '/dashboard/update', 'DashboardController@update' )->name( 'dashboard.update' );
@@ -37,6 +37,7 @@ Route::middleware([ 'app.installed' ])->group( function(){
     
     Route::post( '/dashboard/users/profile', 'DashboardController@showProfile' )->name( 'dashboard.users.post' );
     Route::post( '/dashboard/modules/post', 'DashboardController@postModule' )->name( 'dashboard.modules.post' );
+    Route::post( '/dashboard/modules/migrate/{namespace}', 'DashboardController@runMigration' )->name( 'dashboard.modules.migrate' );
     Route::post( '/dashboard/options/post', 'DashboardController@postOptions' )->name( 'dashboard.options.post' );
     Route::post( '/dashboard/crud/post/{namespace}', 'DashboardController@crudPost' )->name( 'dashboard.crud.post' );
     Route::post( '/dashboard/crud/put/{namespace}/{id}', 'DashboardController@crudPut' )->name( 'dashboard.crud.put' );

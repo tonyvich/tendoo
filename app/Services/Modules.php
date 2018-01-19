@@ -447,7 +447,7 @@ class Modules
          * if module exists
          */
         if ( $module ) {
-            $lastVersion        =   $this->options->get( '_' . $module[ 'namespace' ] . '_version' );
+            $lastVersion        =   $this->options->get( $module[ 'namespace' ] . '_last_migration' );
             $currentVersion     =   $module[ 'version' ];
             $directories        =   Storage::disk( 'modules' )->directories( ucwords( $module[ 'namespace' ] ) . '/Migrations/' );
             $version_names      =   [];
@@ -463,7 +463,9 @@ class Modules
                     version_compare( $lastVersion, $version, '<' ) && 
                     version_compare( $currentVersion, $version, '>=' )
                 ) {
-                    $version_names[]    =   $version;
+                    $version_names[ $version ]    =   array_map( 'basename', Storage::disk( 'modules' )->allFiles(
+                        ucwords( $module[ 'namespace' ] ) . '/Migrations/' . $version 
+                    ) );
                 }
             }
             return $version_names;
