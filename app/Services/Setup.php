@@ -21,7 +21,7 @@ class Setup
      */
     public function saveDatabaseSettings( Request $request )
     {
-        config([ 'database.connections.mysql' => [
+        config([ 'database.connections.test' => [
             'driver'         =>      'mysql',
             'host'           =>      $request->input( 'hostname' ),
             'port'           =>      env('DB_PORT', '3306'),
@@ -37,7 +37,7 @@ class Setup
         ]]);
 
         try {
-            $DB     =   DB::connection()->getPdo();
+            $DB     =   DB::connection( 'test' )->getPdo();
         } catch (\Exception $e) {
 
             switch( $e->getCode() ) {
@@ -59,10 +59,10 @@ class Setup
                 break;
                 case 1049   :   
                     $message =  [
-                         'name'        => 'db_name',
-                         'error'         =>  'unableToSelectDb',
-                         'message'      =>  __( 'Unable to select the database.' ),
-                         'status'       =>  'failed'
+                         'name'             => 'db_name',
+                         'error'            =>  'unableToSelectDb',
+                         'message'          =>  __( 'Unable to select the database.' ),
+                         'status'           =>  'failed'
                     ];
                 break;
                 case 1044   :   

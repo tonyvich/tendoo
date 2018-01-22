@@ -166,7 +166,7 @@ class DashboardController extends Controller
                     'message'   =>  __( 'The similar module found is up-to-date. Please remove this module before proceeding' )
                 ]);
             break;
-            case 'valid_message':
+            case 'valid_module':
                 Event::fire( 'after.uploading.module', $result );
                 return redirect()->route( 'dashboard.modules.list' )->with([
                     'status'    =>  'success',
@@ -175,7 +175,9 @@ class DashboardController extends Controller
             break;
             case 'check_for_migration':
                 Event::fire( 'after.uploading.module', $result );
-                return redirect()->route( 'dashboard.modules.migration' )->with([
+                return redirect()->route( 'dashboard.modules.migration', [
+                    'namespace'     =>  $result[ 'module' ][ 'namespace' ]
+                ])->with([
                     'status'    =>  'success',
                     'message'   =>  __( 'the module has been installed.' )
                 ]);

@@ -23,70 +23,87 @@ class Modules
      * Load Modules
      * @return void
      */
-    public function load()
+    public function load( $dir = null )
     {
-        // get all modules folders
-        $directories  =   Storage::disk( 'modules' )->directories();
+        /**
+         * If we're not loading a specific module directory
+         */
+        if ( $dir == null ) {
+            // get all modules folders
+            $directories  =   Storage::disk( 'modules' )->directories();
+    
+            // get directories
+            foreach( $directories as $dir ) {
+                
+                $this->__init( $dir );
+            }
+        } else {
+            $this->__init( $dir );
+        }
+    }
 
-        // get directories
-        foreach( $directories as $dir ) {
-            
-            /**
-             * Loading files from module directory
-             */
-            $files  =   Storage::disk( 'modules' )->files( $dir );
+    /**
+     * Init Module directory
+     * @param string
+     * @return void
+     */
+    private function __init( $dir ) 
+    {
+        /**
+         * Loading files from module directory
+         */
+        $files  =   Storage::disk( 'modules' )->files( $dir );
 
-            // check if a config file exists
-            if ( in_array( $dir . '/config.xml', $files ) ) {
+        // check if a config file exists
+        if ( in_array( $dir . '/config.xml', $files ) ) {
 
-                $xml        =   XmlParser::load( dirname( __FILE__ ) . '/../../modules/foo/config.xml' );
-                $config     =   $xml->parse([
-                    'namespace'             => [ 'uses'     => 'namespace' ],
-                    // 'language'           =>  [ 'uses'    => 'language' ], 
-                    'version'               =>  [ 'uses'    => 'version' ],
-                    'author'                =>  [ 'uses'    => 'author' ],
-                    'description'           =>  [ 'uses'    => 'description' ],
-                    'dependencies'          =>  [ 'uses'    =>  'dependencies' ],
-                    'name'                  =>  [ 'uses'    =>  'name' ]
-                ]);
+            $xml        =   XmlParser::load( dirname( __FILE__ ) . '/../../modules/' . $dir . '/config.xml' );
+            $config     =   $xml->parse([
+                'namespace'             => [ 'uses'     => 'namespace' ],
+                // 'language'           =>  [ 'uses'    => 'language' ], 
+                'version'               =>  [ 'uses'    => 'version' ],
+                'author'                =>  [ 'uses'    => 'author' ],
+                'description'           =>  [ 'uses'    => 'description' ],
+                'dependencies'          =>  [ 'uses'    =>  'dependencies' ],
+                'name'                  =>  [ 'uses'    =>  'name' ]
+            ]);
 
-                $config[ 'files' ]          =   $files;
+            $config[ 'files' ]          =   $files;
 
-                // If a module has at least a namespace
-                if ( $config[ 'namespace' ] != null ) {
-                    // index path
-                    $moduleBasePath     =   config( 'tendoo.modules_path' ) . $dir . '\\';
-                    $indexPath          =   $moduleBasePath . ucwords( $config[ 'namespace' ] . 'Module.php' );
-                    $webRoutesPath      =   $moduleBasePath . 'Routes\web.php';
+            // If a module has at least a namespace
+            if ( $config[ 'namespace' ] != null ) {
+                // index path
+                $moduleBasePath     =   config( 'tendoo.modules_path' ) . $dir . '\\';
+                $indexPath          =   $moduleBasePath . ucwords( $config[ 'namespace' ] . 'Module.php' );
+                $webRoutesPath      =   $moduleBasePath . 'Routes\web.php';
 
-                    // check index existence
-                    $config[ 'index-file' ]                 =   is_file( $indexPath ) ? $indexPath : false;
-                    $config[ 'routes-file' ]                =   is_file( $webRoutesPath ) ? $webRoutesPath : false;
-                    $config[ 'controllers-path' ]           =   $moduleBasePath . 'Http\Controllers';
-                    $config[ 'controllers-relativePath' ]   =   ucwords( $config[ 'namespace' ] ) . '\Http\Controllers';
-                    $config[ 'views-path' ]                 =   $moduleBasePath . 'Resources\Views\\';
-                    $config[ 'dashboard-path' ]             =   $moduleBasePath . 'Dashboard\\';
-                    $config[ 'enabled' ]                    =   false; // by default the module is set as disabled
+                // check index existence
+                $config[ 'index-file' ]                 =   is_file( $indexPath ) ? $indexPath : false;
+                $config[ 'routes-file' ]                =   is_file( $webRoutesPath ) ? $webRoutesPath : false;
+                $config[ 'controllers-path' ]           =   $moduleBasePath . 'Http\Controllers';
+                $config[ 'controllers-relativePath' ]   =   ucwords( $config[ 'namespace' ] ) . '\Http\Controllers';
+                $config[ 'views-path' ]                 =   $moduleBasePath . 'Resources\Views\\';
+                $config[ 'dashboard-path' ]             =   $moduleBasePath . 'Dashboard\\';
+                $config[ 'enabled' ]                    =   false; // by default the module is set as disabled
 
-                    /**
-                     * If the system is installed, then we can check if the module is enabled or not
-                     * since by default it's not enabled
-                     */
-                    if ( Helper::AppIsInstalled() ) {
-                        $modules                =   ( array ) json_decode( $this->options->get( 'enabled_modules' ), true );
-                        $config[ 'enabled' ]    =   in_array( $config[ 'namespace' ], $modules ) ? true : false;
-                    }
-                    
-                    /**
-                     * Defining Entry Class
-                     * Entry class must be namespaced like so : 'Modules\[namespace]\[namespace] . 'Module';
-                     */
-                    $config[ 'entry-class' ]    =  'Modules\\' . $config[ 'namespace' ] . '\\' . $config[ 'namespace' ] . 'Module'; 
+                /**
+                 * If the system is installed, then we can check if the module is enabled or not
+                 * since by default it's not enabled
+                 */
+                if ( Helper::AppIsInstalled() ) {
+                    $modules                =   ( array ) json_decode( $this->options->get( 'enabled_modules' ), true );
+                    $config[ 'enabled' ]    =   in_array( $config[ 'namespace' ], $modules ) ? true : false;
+                }
+                
+                /**
+                 * Defining Entry Class
+                 * Entry class must be namespaced like so : 'Modules\[namespace]\[namespace] . 'Module';
+                 */
+                $config[ 'entry-class' ]    =  'Modules\\' . $config[ 'namespace' ] . '\\' . $config[ 'namespace' ] . 'Module'; 
 
-                    // an index MUST be provided and MUST have the same Name than the module namespace + 'Module'
-                    if ( $config[ 'index-file' ] ) {
-                        $this->modules[ $config[ 'namespace' ] ]    =   $config;
-                    }
+                // an index MUST be provided and MUST have the same Name than the module namespace + 'Module'
+                if ( $config[ 'index-file' ] ) {
+                    $this->modules[ $config[ 'namespace' ] ]    =   $config;
                 }
             }
         }
@@ -214,16 +231,18 @@ class Modules
 
         $fullPath   =   storage_path( 'modules\\' . $path );        
         $dir        =   dirname( $fullPath );
-
         $archive    =   new \ZipArchive;
+
         $archive->open( $fullPath );
         $archive->extractTo( $dir );
         $archive->close();
-        // delete zip
+
+        /**
+         * Unlink the uploaded zipfile
+         */
         unlink( $fullPath );
 
         $directories    =   Storage::disk( 'temp-modules' )->directories();
-        $resultMessage  =   'invalid_module';
         $module         =   [];
         
         /**
@@ -233,62 +252,168 @@ class Modules
             // browse directory files
             $files          =   Storage::disk( 'temp-modules' )->allFiles( $dir );
 
-            foreach( $files as $file ) {
-                if ( $file == $dir . '/config.xml' ) {
-                    $xml    =   new \SimpleXMLElement( 
+            if ( in_array( $dir . '/config.xml', $files ) ) {
+                
+                $file   =   $dir . '/config.xml';
+
+                $xml    =   new \SimpleXMLElement( 
+                    Storage::disk( 'temp-modules' )->get( $file )
+                );
+
+                if ( 
+                    ! isset( $xml->namespace ) &&
+                    ! isset( $xml->version ) &&
+                    ! isset( $xml->name )
+                ) {
+
+                    /**
+                     * the file send is not a valid module
+                     */
+                    $this->__clearTempFolder();
+                    
+                    return [
+                        'status'    =>  'danger',
+                        'code'      =>  'invalid_module'
+                    ];
+                }
+
+                $moduleNamespace    =   ucwords( $xml->namespace );
+                $moduleVersion      =   ucwords( $xml->version );
+
+                /**
+                 * Check if a similar module already exists
+                 * and if the new module is outdated
+                 */
+                if ( $module = $this->get( $moduleNamespace ) ) {
+                    
+                    if ( version_compare( $module[ 'version' ], $moduleVersion, '>=' ) ) {
+                        
+                        /**
+                         * We're dealing with old module
+                         */
+                        $this->__clearTempFolder();
+
+                        return [
+                            'status'    =>  'danger',
+                            'code'      =>  'old_module',
+                            'module'    =>  $module
+                        ];
+                    }
+                } 
+
+                /**
+                 * @step 1 : creating host folder
+                 * No errors has been found, We\'ll install the module then
+                 */
+                Storage::disk( 'modules' )->makeDirectory( $moduleNamespace );
+
+                /**
+                 * @step 2 : move files
+                 * We're now looping to move files
+                 */
+                foreach( $files as $file ) {
+                    // $realFile   =   substr( $file, strlen( $dir ) + 1 );
+                    Storage::disk( 'modules' )->put( 
+                        $file,
                         Storage::disk( 'temp-modules' )->get( $file )
                     );
-                    
-                    if ( 
-                        ! isset( $xml->namespace ) &&
-                        ! isset( $xml->version ) &&
-                        ! isset( $xml->name )
-                    ) {
-                        /**
-                         * The resultMessage is already "invalid_message"
-                         */
-                        Storage::disk( 'temp-modules' )->deleteDirectory( $dir );
-                        break;
-                    }
-
-                    /**
-                     * Check if a similar module already exists
-                     * and if the new module is outdated
-                     */
-                    if ( $module = $this->get( ucwords( $xml->namespace ) ) ) {
-                        if ( version_compare( $module[ 'version' ], $xml->version, '>=' ) ) {
-                            $resultMessage   =   'old_module';
-                            break;
-                        } 
-                    }
-
-                    /**
-                     * No errors has been found, We\'ll install the module then
-                     */
-
-                    // @step 1 : creating host module
-                    Storage::disk( 'modules' )->makeDirectory( ucwords( $xml->namespace ) );
-
-                    /**
-                     * We're now looping to move files
-                     */
-                    foreach( $files as $file ) {
-                        // $realFile   =   substr( $file, strlen( $dir ) + 1 );
-                        Storage::disk( 'modules' )->put( 
-                            $file,
-                            Storage::disk( 'temp-modules' )->get( $file )
-                        );
-                    }
-
-                    /**
-                     * If the module has been copied, no need to continue the loop. Just break it
-                     */
-                    $resultMessage   =   'valid_message';
-                    break;
                 }
+
+                /**
+                 * @step 3 : run migrations
+                 * check if the module has a migration
+                 */                    
+                return $this->__runModuleMigration( $moduleNamespace, $xml );                
             }
         }
+    }
 
+    /**
+     * Check module migration
+     * @return array of response
+     */
+    private function __runModuleMigration( $moduleNamespace, $xml )
+    {
+        $module_version_key     =   strtolower( $moduleNamespace ) . '_last_migration';
+            
+        if ( $version = $this->options->get( $module_version_key ) != null ) {
+
+            /**
+             * the new options will be set after the migration
+             */   
+            $this->__clearTempFolder();
+
+            return [
+                'status'    =>  'success',
+                'code'      =>  'check_for_migration',
+                'module'    =>  $this->get( $moduleNamespace )
+            ];
+        } else {
+
+            /**
+             * Load module since it has'nt yet been added to the 
+             * runtime
+             */
+            $this->load( $moduleNamespace );
+
+            /**
+             * Run the first migration
+             */
+            $migrationFiles   =   $this->getMigrations( $moduleNamespace );
+
+            /**
+             * Checks if migration files exists
+             */
+            if ( $migrationFiles ) {
+                foreach( $migrationFiles as $version => $files ) {
+
+                    /**
+                     * Looping each migration files
+                     */
+                    foreach ( $files as $file ) {
+                        /**
+                         * include initial migration files
+                         */             
+                        $filePath   =   base_path() . '/modules/' . $moduleNamespace . '/Migrations/' . $version . '/' . $file;
+                        $fileInfo   =   pathinfo( $filePath );
+                        $fileName   =   $fileInfo[ 'filename' ];
+                        $className  =   str_replace( ' ', '', ucwords( str_replace( '_', ' ', $fileName ) ) );
+                        $className  =   $moduleNamespace . '\Migrations\\' . $className;
+                        
+                        include_once( $filePath );
+
+                        if ( class_exists( $className ) ) {
+    
+                            /**
+                             * Create Object
+                             */
+                            $object     =   new $className;
+            
+                            // running up method
+                            $object->up();
+                        }
+                    }
+                    
+                }
+            }
+
+            $this->options->set( $module_version_key, $xml->version );
+
+            $this->__clearTempFolder();
+
+            return [
+                'status'    =>  'danger',
+                'code'      =>  'valid_module'
+            ];
+        }
+    }
+
+    /**
+     * Clear Temp Folder
+     * @return void
+     */
+    private function __clearTempFolder()
+    {
         /**
          * The user may have uploaded some unuseful files. 
          * We should then delete everything and return an error.
@@ -299,33 +424,6 @@ class Modules
         foreach( $files as $file ) {
             Storage::disk( 'temp-modules' )->delete( $file );
         }
-
-        
-        /**
-         * check if the module has a migration
-         */
-        $module_version_key     =   '_' . $module[ 'namespace' ] . '_version';
-        if ( $version = $this->options->get( $module_version_key ) != null ) {
-            /**
-             * the new options will be set after the migration
-             */
-            return [
-                'status'    =>  'success',
-                'code'      =>  'check_for_migration',
-                'module'    =>  $module
-            ];
-        } else {
-            $this->options->set( $module_version_key, $module[ 'version' ] );
-        }
-
-        /**
-         * Return result message
-         */
-        return [
-            'status'    =>  'danger',
-            'code'      =>  $resultMessage,
-            'module'    =>  $module
-        ];
     }
 
     /**
@@ -347,7 +445,46 @@ class Modules
             /**
              * Delete Migration version
              */
-            $this->options->delete( '_' . $module[ 'namespace' ] . '_version' );
+            $this->options->delete( strtolower( $module[ 'namespace' ] ) . '_last_migration' );
+
+            /**
+             * Run down method for all migrations 
+             */
+
+            $migrationFiles   =   Storage::disk( 'modules' )->allFiles( 
+                $module[ 'namespace' ] . '/Migrations/'
+            );
+
+            /**
+             * Checks if migration files exists
+             * so that we can "down" all migrations
+             */
+            if ( $migrationFiles ) {
+                foreach( $migrationFiles as $file ) {
+    
+                    /**
+                     * include initial migration files
+                     */             
+                    $filePath   =   base_path() . '/modules/' . $file;
+                    $fileInfo   =   pathinfo( $filePath );
+                    $fileName   =   $fileInfo[ 'filename' ];
+                    $className  =   str_replace( ' ', '', ucwords( str_replace( '_', ' ', $fileName ) ) );
+                    $className  =   ucwords( $module[ 'namespace' ] ) . '\Migrations\\' . $className;
+                    
+                    include_once( $filePath );
+
+                    if ( class_exists( $className ) ) {
+
+                        /**
+                         * Create Object
+                         */
+                        $object     =   new $className;
+        
+                        // running up method
+                        $object->down();
+                    }
+                }
+            }
 
             /**
              * Delete module from DISK
@@ -447,7 +584,7 @@ class Modules
          * if module exists
          */
         if ( $module ) {
-            $lastVersion        =   $this->options->get( $module[ 'namespace' ] . '_last_migration' );
+            $lastVersion        =   $this->options->get( strtolower( $module[ 'namespace' ] ) . '_last_migration' );
             $currentVersion     =   $module[ 'version' ];
             $directories        =   Storage::disk( 'modules' )->directories( ucwords( $module[ 'namespace' ] ) . '/Migrations/' );
             $version_names      =   [];
