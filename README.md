@@ -21,3 +21,14 @@ The documentation is currently written as we add/remove feature.
 # How to get involved
 Just fork the project and send your pull request :). 
 The code is commented and we do follow PSR-2, PSR-4 Standars, hope you're skilled.
+
+# Internal Features
+
+## 1 - Generating a module
+`php artisan make:module`
+this will launch the module generator command where you'll have to provide namespae, name, author and description. the default verison is set to 1.0.
+We'll add more generator to generate : 
+- Settings Pages
+- Crud Pages
+- Fields Options
+...
