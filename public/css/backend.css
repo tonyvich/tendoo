@@ -206,6 +206,10 @@ table.table .checkbox label .checkbox-decorator, table.table label.checkbox-inli
 .module-card .card:first-child {
     border-right: solid 1px #e6e6e6;
 }
+.module-card .card {
+    height:180px;
+    border-bottom: solid 1px #e6e6e6;
+}
 
 /**
  * Material Dashboard with material lite

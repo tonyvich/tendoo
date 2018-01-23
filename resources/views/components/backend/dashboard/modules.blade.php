@@ -33,37 +33,37 @@
                     </div>
                     <div class="row m-0">
                         @if( $collection->isNotEmpty() )
-                        <div class="col-4 p-0 module-card">
                             @foreach( $rowsModules as $rowModule)
                                 @foreach( $rowModule as $module )
-                                <div class="card no-shadow">
-                                    <div class="card-header">{{ $module[ 'name' ] }}</div>
-                                    <div class="card-body p-2">
-                                        <small>( {{ @$module[ 'version' ] }} )</small></h4>
-                                        <p>{{ @$module[ 'description' ] }}</p>
-                                        <small>{{ @$module[ 'author' ] }}</small>
-                                    </div>
-                                    <div class="card-footer p-2 d-flex justify-content-between">
-                                        <div>
-                                            @if( ! $module[ 'enabled' ] )
-                                                <a href="{{ route( 'dashboard.modules.enable', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn btn-success btn-raised">{{ __( 'Enable' ) }}</a>
-                                            @else 
-                                                <a href="{{ route( 'dashboard.modules.disable', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn btn-secondary btn-raised">{{ __( 'Disable' ) }}</a>
-                                            @endif
+                                <div class="col-md-4 col-xs-12 col-sm-12 p-0 module-card">
+                                    <div class="card no-shadow d-flex flex-column h-100">
+                                        <div class="card-header">{{ $module[ 'name' ] }} ( {{ @$module[ 'version' ] }} )</div>
+                                        <div class="card-body p-2">
+                                            <small></small></h4>
+                                            <p>{{ @$module[ 'description' ] }}</p>
+                                            <small>{{ @$module[ 'author' ] }}</small>
                                         </div>
-                                        <div>
-                                            <a href="{{ route( 'dashboard.modules.delete', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn-icon btn btn-danger btn-raised">
-                                                <i class="material-icons">delete_forever</i>
-                                            </a>
-                                            <a href="{{ route( 'dashboard.modules.extract', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn-icon btn btn-primary btn-raised">
-                                                <i class="material-icons">file_download</i>
-                                            </a>
+                                        <div class="card-footer p-2 d-flex justify-content-between">
+                                            <div>
+                                                @if( ! $module[ 'enabled' ] )
+                                                    <a href="{{ route( 'dashboard.modules.enable', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn btn-success btn-raised">{{ __( 'Enable' ) }}</a>
+                                                @else 
+                                                    <a href="{{ route( 'dashboard.modules.disable', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn btn-secondary btn-raised">{{ __( 'Disable' ) }}</a>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <a href="{{ route( 'dashboard.modules.delete', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn-icon btn btn-danger btn-raised">
+                                                    <i class="material-icons">delete_forever</i>
+                                                </a>
+                                                <a href="{{ route( 'dashboard.modules.extract', [ 'namespace' => $module[ 'namespace' ] ] ) }}" class="mb-0 btn-icon btn btn-primary btn-raised">
+                                                    <i class="material-icons">file_download</i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 @endforeach
                             @endforeach
-                        </div>
                         @else
                         <div class="p-3 text-center">
                             <h5 class="mb-0">{{ __( 'No module has been installed yet' ) }}</h5>
