@@ -26,6 +26,7 @@ The code is commented and we do follow PSR-2, PSR-4 Standars, hope you're skille
 
 ## 1 - Generating a module
 `php artisan make:module`
+
 this will launch the module generator command where you'll have to provide namespae, name, author and description. the default verison is set to 1.0.
 We'll add more generator to generate : 
 - Settings Pages
