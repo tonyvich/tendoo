@@ -129,6 +129,7 @@ class Setup
         
         $this->options->set( 'app_name', $request->input( 'app_name' ) );
         $this->options->set( 'open_registration', 'true' );
+        $this->options->set( 'db_version', config( 'tendoo.db_version' ) );
         
         $user               =   new User;
         $user->id           =   rand(1,99);

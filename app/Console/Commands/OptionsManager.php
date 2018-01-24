@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class MakeModuleMigrations extends Command
+class OptionsManager extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:migration {namespace}';
+    protected $signature = 'command:name';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create module migration';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.

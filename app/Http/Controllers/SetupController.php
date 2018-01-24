@@ -44,6 +44,7 @@ class SetupController extends Controller
     public function post_database( SetupDatabaseRequest $request )
     {
         $errors = $this->setup->saveDatabaseSettings( $request );
+        
         if ( $errors !== true ) {
             $validator    =   Validator::make( $request->all(), [] );
             $validator->errors()->add( $errors[ 'name' ], $errors[ 'message' ] );

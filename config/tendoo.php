@@ -2,6 +2,7 @@
 return [
     'modules_path'  =>  base_path() . '\modules\\',
     'version'       =>  '5.0',
+    'db_version'    =>  '1.0',
     'debug'         =>  [
         'errors'    =>  true
     ],

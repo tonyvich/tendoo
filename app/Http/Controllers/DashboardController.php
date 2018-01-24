@@ -59,6 +59,18 @@ class DashboardController extends Controller
      */
     public function enableModule( $namespace )
     {
+        /**
+         * check if the module has a migration
+         * if a migration exist, then we'll return to the migration page
+         */
+        $migration  =   $this->modules->getMigrations( $namespace );
+
+        if ( $migration ) {
+            return redirect()->route( 'dashboard.modules.migration', [
+                'namespace'     =>  $namespace
+            ]);
+        }
+
         // @todo check if the user has the right to perform this action.
         Event::fire( 'before.enabling.module', $namespace );
 
