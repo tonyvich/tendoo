@@ -25,7 +25,7 @@ class DashboardController extends Controller
         
         if ( Helper::AppIsInstalled() ) {
             $this->options  =   app()->make( 'App\Services\Options' );
-            $this->modules  =   app()->make( 'App\Services\Modules' );
+            $this->modules  =   app()->make( Modules::class );
             $this->menus    =   app()->make( 'App\Services\Dashboard\MenusConfig' );
     
             Event::fire( 'dashboard.loaded' );
@@ -237,9 +237,28 @@ class DashboardController extends Controller
      * @param string namespace
      * @return string json
      */
-    public function runMigration( Request $request )
+    public function runMigration( $namespace, Request $request )
     {
-        return $request->all();
+        $migration     =   $this->modules->runMigration( 
+            $namespace,  
+            $request->input( 'version' ), 
+            $request->input( 'file' ) 
+        );
+
+        if ( $migration ) {
+            return [
+                'status'    =>  'success',
+                'message'   =>  __( 'Migration has been correctly executed' )
+            ];
+        }
+
+        /**
+         * Probaly the file/version aren't correct
+         */
+        return [
+            'status'    =>  'danger',
+            'message'   =>  __( 'An error occured while executing the migration' )
+        ];
     }
 
     /**

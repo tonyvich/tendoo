@@ -71,23 +71,34 @@ var ModuleMigration     =   new Vue({
                         version,
                         file    :   files[0]
                     }).then( result => {
-                        /**
-                         * @todo request to run a migration
-                         */
-                        this.tasks[ this.tasks.length - 1 ].subTasks.push({
-                            text    :   'Migrating : ' + files[0]
-                        });
 
                         /**
-                         * remove current version
+                         * Parse result
                          */
-                        files.splice( 0, 1 );
-
-                        this.runFileMigration( version, files ).then( ( version, files ) => {
-                            setTimeout( () => {
-                                resolve( version, files );
-                            }, 500 );
-                        });
+                        if ( result.data.status == 'danger' ) {
+                            this.tasks.push({
+                                text        :   'An Error occurred',
+                                subTasks    :   []
+                            });
+                        } else {
+                            /**
+                             * @todo request to run a migration
+                             */
+                            this.tasks[ this.tasks.length - 1 ].subTasks.push({
+                                text    :   'Migrating : ' + files[0]
+                            });
+    
+                            /**
+                             * remove current version
+                             */
+                            files.splice( 0, 1 );
+    
+                            this.runFileMigration( version, files ).then( ( version, files ) => {
+                                setTimeout( () => {
+                                    resolve( version, files );
+                                }, 500 );
+                            });
+                        }
                     });
                 } else {
                     resolve( version, files );

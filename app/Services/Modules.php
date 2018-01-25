@@ -323,7 +323,7 @@ class Modules
                  * @step 3 : run migrations
                  * check if the module has a migration
                  */                    
-                return $this->__runModuleMigration( $moduleNamespace, $xml );                
+                return $this->__runModuleMigration( $moduleNamespace, $xml->version );                
             }
         }
     }
@@ -332,7 +332,7 @@ class Modules
      * Check module migration
      * @return array of response
      */
-    private function __runModuleMigration( $moduleNamespace, $xml )
+    private function __runModuleMigration( $moduleNamespace, $version )
     {
         $module_version_key     =   strtolower( $moduleNamespace ) . '_last_migration';
             
@@ -371,33 +371,13 @@ class Modules
                      * Looping each migration files
                      */
                     foreach ( $files as $file ) {
-                        /**
-                         * include initial migration files
-                         */             
-                        $filePath   =   base_path() . '/modules/' . $moduleNamespace . '/Migrations/' . $version . '/' . $file;
-                        $fileInfo   =   pathinfo( $filePath );
-                        $fileName   =   $fileInfo[ 'filename' ];
-                        $className  =   str_replace( ' ', '', ucwords( str_replace( '_', ' ', $fileName ) ) );
-                        $className  =   $moduleNamespace . '\Migrations\\' . $className;
-                        
-                        include_once( $filePath );
-
-                        if ( class_exists( $className ) ) {
-    
-                            /**
-                             * Create Object
-                             */
-                            $object     =   new $className;
-            
-                            // running up method
-                            $object->up();
-                        }
+                        $this->__runSingleFile( 'up', $module, $file );
                     }
                     
                 }
             }
 
-            $this->options->set( $module_version_key, $xml->version );
+            $this->options->set( $module_version_key, $version );
 
             $this->__clearTempFolder();
 
@@ -461,28 +441,7 @@ class Modules
              */
             if ( $migrationFiles ) {
                 foreach( $migrationFiles as $file ) {
-    
-                    /**
-                     * include initial migration files
-                     */             
-                    $filePath   =   base_path() . '/modules/' . $file;
-                    $fileInfo   =   pathinfo( $filePath );
-                    $fileName   =   $fileInfo[ 'filename' ];
-                    $className  =   str_replace( ' ', '', ucwords( str_replace( '_', ' ', $fileName ) ) );
-                    $className  =   ucwords( $module[ 'namespace' ] ) . '\Migrations\\' . $className;
-                    
-                    include_once( $filePath );
-
-                    if ( class_exists( $className ) ) {
-
-                        /**
-                         * Create Object
-                         */
-                        $object     =   new $className;
-        
-                        // running up method
-                        $object->down();
-                    }
+                    $this->__runSingleFile( 'down', $module, $file );
                 }
             }
 
@@ -505,6 +464,46 @@ class Modules
             'status'    =>  'danger',
             'code'      =>  'unknow_module'
         ];
+    }
+
+    /**
+     * Run a single file
+     * @param array module
+     * @param string file
+     */
+    private function __runSingleFile( $method, $module, $file )
+    {
+        /**
+         * include initial migration files
+         */             
+        $filePath   =   base_path() . '/modules/' . $file;
+        $fileInfo   =   pathinfo( $filePath );
+        $fileName   =   $fileInfo[ 'filename' ];
+        $className  =   str_replace( ' ', '', ucwords( str_replace( '_', ' ', $fileName ) ) );
+        $className  =   'Modules\\' . ucwords( $module[ 'namespace' ] ) . '\Migrations\\' . $className;
+        
+        if ( is_file( $filePath ) ) {
+
+            /**
+             * Include the migration class file
+             * and checks if that class exists
+             * we're parsin the className from the file name
+             */
+            include_once( $filePath );
+    
+            if ( class_exists( $className ) ) {
+    
+                /**
+                 * Create Object
+                 */
+                $object     =   new $className;
+    
+                // the method should be "up" or "down"
+                $object->$method();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -608,5 +607,16 @@ class Modules
             return $version_names;
         }
         return [];
+    }
+
+    /**
+     * Run module migration
+     * @param array of migration
+     * @return void
+     */
+    public function runMigration( $namespace, $version, $file )
+    {
+        $module     =   $this->get( $namespace );
+        return $this->__runSingleFile( 'up', $module, $module[ 'namespace' ] . '/Migrations/' . $version . '/' . $file );
     }
 }

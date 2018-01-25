@@ -15,7 +15,7 @@ class Schema
                 'bigIncrements',
                 'bigInteger', 'binary', 
                 'boolean', 'char', 'date', 
-                'dateTime', 'decimal', 'double', 
+                'datetime', 'decimal', 'double', 
                 'float', 'increments', 'integer', 'json',
                 'jsonb', 'longText', 'mediumInteger', 'mediumText',
                 'morphs', 'nullableTimestamps', 'smallInteger', 'tinyInteger',

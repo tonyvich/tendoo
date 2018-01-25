@@ -15,7 +15,7 @@ class ModuleController extends Command
      *
      * @var string
      */
-    protected $signature = 'module:controller {namespace} {name} {--resource=}';
+    protected $signature = 'module:controller {namespace} {name?} {--resource=} {--delete=}';
 
     /**
      * The console command description.
@@ -48,11 +48,24 @@ class ModuleController extends Command
          */
         if ( $module = $modules->get( $this->argument( 'namespace' ) ) ) {
 
+            $controllerPath     =   $module[ 'namespace' ] . '/Http/Controllers/';
+
+            /**
+             * delete all module controllers
+             */
+            if ( $this->option( 'delete' ) == 'all' ) {
+                if ( $this->confirm( 'Do you want to delete all controllers ?' ) ) {
+                    Storage::disk( 'modules' )->deleteDirectory( $controllerPath );
+                    Storage::disk( 'modules' )->MakeDirectory( $controllerPath );
+                    return $this->info( 'All controllers has been deleted !' );
+                }
+            }
+
             /**
              * Define the file name
              */
             $name       =   ucwords( camel_case( $this->argument( 'name' ) ) );
-            $fileName   =   $module[ 'namespace' ] . '/Http/Controllers/' . $name;
+            $fileName   =   $controllerPath . $name;
             $namespace  =   $this->argument( 'namespace' );
 
             if ( ! Storage::disk( 'modules' )->exists( 
