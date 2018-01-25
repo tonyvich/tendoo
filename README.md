@@ -28,11 +28,16 @@ The code is commented and we do follow PSR-2, PSR-4 Standars, hope you're skille
 `php artisan make:module`
 
 ## 2 - Generating a migration for a module
+
 `php artisan module:migration Foo`
+
 Where 'Foo' is the module namespace. You'll have to input the release under which you would like to run a migration. You can input 1.0, as well as 10.5
 Then you'll have to provide the migration file name, which will be used as the migration class name as well, like so :
+
 `Create Some Migration Table`
-You can create table and table columns like so
+
+You can create table and table columns like so :
+
 `Create Some Migration Table --table=foo --schema=name:string|birth_date:datetime|role_id:integer`
 
 ## 3 - Generating a controller for a module
