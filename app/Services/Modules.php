@@ -34,7 +34,6 @@ class Modules
     
             // get directories
             foreach( $directories as $dir ) {
-                
                 $this->__init( $dir );
             }
         } else {
@@ -126,9 +125,15 @@ class Modules
             if ( ! $module[ 'enabled' ] ) {
                 continue;
             }
-            
-            // include module index file
-            include_once( $module[ 'index-file' ] );
+
+            try {
+                // include module index file
+                echo file_get_contents( $module[ 'index-file' ] );die;
+                $content    =   eval( file_get_contents( $module[ 'index-file' ] ) );
+                include_once( $module[ 'index-file' ] );
+            } catch( \Throwable $e ) {
+                dd( $e );
+            }
             
             // run module entry class
             $loadedModule     =   new $module[ 'entry-class' ];

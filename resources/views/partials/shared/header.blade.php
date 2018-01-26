@@ -20,4 +20,4 @@
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     </script>
 </head>
-<body class="red-theme">
+<body class="dark-theme">

@@ -15,7 +15,7 @@ class DisableModule extends Command
      *
      * @var string
      */
-    protected $signature = 'module:disable {namespace}';
+    protected $signature = 'module:disable {namespace?} {--all}';
 
     /**
      * The console command description.
@@ -41,14 +41,40 @@ class DisableModule extends Command
      */
     public function handle()
     {
-        $modules    =   app()->make( Modules::class );
-        $this->module   =   $modules->get( ucwords( $this->argument( 'namespace' ) ) );
+        $this->modules      =   app()->make( Modules::class );
+        $this->module       =   $this->modules->get( ucwords( $this->argument( 'namespace' ) ) );
 
+        if ( $this->option( 'all' ) ) {
+            $this->__disableAll();
+        } else {
+            $this->__disableSingle();
+        }   
+    }
+
+    /**
+     * Disable Single module
+     * @return void
+     */
+    private function __disableSingle()
+    {
         if ( $this->module ) {
-            $modules->disable( ucwords( $this->argument( 'namespace' ) ) );
+            $this->modules->disable( ucwords( $this->argument( 'namespace' ) ) );
             return $this->info( sprintf( '%s has been disabled.', $this->module[ 'name' ] ) );
         }
-
         return $this->error( 'Unable to locate the module !' );
+    }
+
+    /**
+     * Disable All Modules
+     * @return void
+     */
+    private function __disableAll()
+    {
+        $modules    =   $this->modules->get();
+
+        foreach ( $modules as $module ) {
+            $this->modules->disable( $module[ 'namespace' ] );
+        }
+        return $this->info( 'All modules has been disabled !' );
     }
 }

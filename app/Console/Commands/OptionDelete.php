@@ -3,22 +3,23 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Services\Options;
 
-class OptionsManager extends Command
+class OptionDelete extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'option:delete {key}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Delete an option from the option table.';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,9 @@ class OptionsManager extends Command
      */
     public function handle()
     {
-        //
+        $this->options  =   app()->make( Options::class );
+        $key            =   $this->argument( 'key' );        
+        $this->options->delete( $key );
+        return $this->info( 'The option has been deleted !' );
     }
 }
