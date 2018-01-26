@@ -1,0 +1,7 @@
+.red-theme #sidebar-menu, .red-theme #main-nav{
+    background: rgb(169, 36, 36);
+    color: #FFF;
+}
+.red-theme #sidebar-menu a, .red-theme #main-nav a {
+    color: #EEE !important;
+}

@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Http\Requests\OptionsRequest;
 use App\Http\Requests\CrudPostRequest;
 use App\Http\Requests\CrudPutRequest;
+use App\Http\Requests\PostModuleRequest;
 
 class DashboardController extends Controller
 {
@@ -151,7 +152,7 @@ class DashboardController extends Controller
      * @param Request
      * @return void
      */
-    public function postModule( Request $request )
+    public function postModule( PostModuleRequest $request )
     {
         Event::fire( 'before.uploading.module', $request );
 

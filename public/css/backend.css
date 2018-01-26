@@ -88,10 +88,6 @@ aside#sidebar-menu {
     width: 250px;
     left:   0px;
 }
-aside#sidebar-menu .list-group-item.active-menu a {
-    border-left: solid 5px #7142a5;
-    padding-left: 8px;
-}
 
 aside#sidebar-menu>ul .list-group-item > a {
     width: 100%;
@@ -106,7 +102,7 @@ aside#sidebar-menu {
     width: 250px;
 }
 aside#sidebar-menu>ul .list-group-item:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
 }
 aside#sidebar-menu>ul .list-group-item:hover a {
     text-decoration: none;

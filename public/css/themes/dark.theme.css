@@ -1,0 +1,7 @@
+.dark-theme #sidebar-menu, .dark-theme #main-nav{
+    background: rgb(83, 83, 83);
+    color: #FFF;
+}
+.dark-theme #sidebar-menu a, .dark-theme #main-nav a {
+    color: #EEE !important;
+}

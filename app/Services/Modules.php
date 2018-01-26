@@ -324,6 +324,16 @@ class Modules
                  * check if the module has a migration
                  */                    
                 return $this->__runModuleMigration( $moduleNamespace, $xml->version );                
+            } else {
+                /**
+                 * the file send is not a valid module
+                 */
+                $this->__clearTempFolder();
+                
+                return [
+                    'status'    =>  'danger',
+                    'code'      =>  'invalid_module'
+                ];
             }
         }
     }
@@ -395,10 +405,19 @@ class Modules
     private function __clearTempFolder()
     {
         /**
-         * The user may have uploaded some unuseful files. 
+         * The user may have uploaded some unuseful folders. 
          * We should then delete everything and return an error.
          */
 
+        $directories  =   Storage::disk( 'temp-modules' )->allDirectories();
+
+        foreach( $directories as $directory ) {
+            Storage::disk( 'temp-modules' )->deleteDirectory( $directory );
+        }
+
+        /**
+         * Delete unused files as well
+         */
         $files  =   Storage::disk( 'temp-modules' )->allFiles();
 
         foreach( $files as $file ) {

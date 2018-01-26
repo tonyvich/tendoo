@@ -30,7 +30,14 @@
                         </div>
                         {{ csrf_field() }}
                         <div class="card-body p-3">
-                            <input type="file" name="module" id="module-file">
+                            <div class="form-group mb-0">
+                                <input type="file" name="module" id="module-file">
+                                @if ( $errors->has( 'module' ) )
+                                <div class="invalid-feedback d-block">
+                                    {{ $errors->first( 'module' ) }}
+                                </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="p-2 card-footer">
                             <button type="submit" class="mb-0 btn btn-raised btn-primary">{{ __( 'Upload' ) }}</button>

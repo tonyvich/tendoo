@@ -2,7 +2,7 @@
 @extends( 'layouts.backend.master' )
 @section( 'layouts.backend.master.body' )
     <div class="h-100 d-flex align-items-stretch flex-row">
-        <aside id="sidebar-menu" class="h-100 bg-light d-flex flex-column">
+        <aside id="sidebar-menu" class="h-100 d-flex flex-column">
             <div class="sidebar-logo align-items-center d-flex justify-content-center">
             Hello World
             </div>

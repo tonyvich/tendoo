@@ -37,7 +37,7 @@
                                 @foreach( $rowModule as $module )
                                 <div class="col-md-4 col-xs-12 col-sm-12 p-0 module-card">
                                     <div class="card no-shadow d-flex flex-column h-100">
-                                        <div class="card-header">{{ $module[ 'name' ] }} ( {{ @$module[ 'version' ] }} )</div>
+                                        <div class="card-header p-2">{{ $module[ 'name' ] }} ( {{ @$module[ 'version' ] }} )</div>
                                         <div class="card-body p-2">
                                             <small></small></h4>
                                             <p>{{ @$module[ 'description' ] }}</p>

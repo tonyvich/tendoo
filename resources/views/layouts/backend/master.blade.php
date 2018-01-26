@@ -1,6 +1,8 @@
 @section( 'partials.shared.head' )
     <link rel="stylesheet" href="{{ asset( 'node_modules/material-components-web/dist/material-components-web.css' ) }}">
     <link rel="stylesheet" href="{{ asset( 'css/backend.css' ) }}">
+    <link rel="stylesheet" href="{{ asset( 'css/themes/dark.theme.css' ) }}">
+    <link rel="stylesheet" href="{{ asset( 'css/themes/red.theme.css' ) }}">
     <script src="{{ asset( 'bower_components/jquery/dist/jquery.min.js' ) }}"></script>
     <script src="{{ asset( 'bower_components/vue/dist/vue.min.js' ) }}"></script>
     <script src="{{ asset( 'bower_components/axios/dist/axios.min.js' ) }}"></script>
