@@ -47,6 +47,6 @@ class DashboardLoaded
         $this->menus->addAfter( 'dashboard', $Foo );
         $this->menus->addAfter( 'foo', $Bar );
         $this->menus->addAfter( 'foo', $settings );
-        $this->menus->addTo( 'nexopos.settings', [ $nexoposGeneral, $Rab ] );
+        $this->menus->addTo( 'nexopos.settings', [ $nexoposGeneral, $Rab, $Rab, $Rab, $Rab, $Rab, $Rab, $Rab, $Rab ] );
     }
 }
