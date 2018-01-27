@@ -47,6 +47,16 @@ You can create table and table columns like so :
 `php artisan module:controller Foo --delete=all`
 You'll have to confirm your action.
 
+## 5 - Creating Model for modules
+`php artisan module:model {module_namespace} {model_name}`
+Create a model on the module Model folder.
+
+## 6 - Managing options from CLI
+### A - Set a value
+`php artisan option:set {key} --v={value}`
+### B - Delete a value
+`php artisan option:delete {key}`
+
 this will launch the module generator command where you'll have to provide namespae, name, author and description. the default verison is set to 1.0.
 We'll add more generator to generate : 
 - Settings Pages
