@@ -27,6 +27,26 @@ The code is commented and we do follow PSR-2, PSR-4 Standars, hope you're skille
 ## 1 - Generating a module
 `php artisan make:module`
 
+## 2 - Generating a migration for a module
+
+`php artisan module:migration Foo`
+
+Where 'Foo' is the module namespace. You'll have to input the release under which you would like to run a migration. You can input 1.0, as well as 10.5
+Then you'll have to provide the migration file name, which will be used as the migration class name as well, like so :
+
+`Create Some Migration Table`
+
+You can create table and table columns like so :
+
+`Create Some Migration Table --table=foo --schema=name:string|birth_date:datetime|role_id:integer`
+
+## 3 - Generating a controller for a module
+`php artisan module:controller Foo WhatEverController`
+
+## 4 - Deleting all controllers for a module
+`php artisan module:controller Foo --delete=all`
+You'll have to confirm your action.
+
 this will launch the module generator command where you'll have to provide namespae, name, author and description. the default verison is set to 1.0.
 We'll add more generator to generate : 
 - Settings Pages
