@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use App\Services\Helper;
 use XmlParser;
+use PhpParser\Error;
+use PhpParser\NodeDumper;
+use PhpParser\ParserFactory;
 class Modules 
 {
     private $modules    =   [];
@@ -126,14 +129,8 @@ class Modules
                 continue;
             }
 
-            try {
-                // include module index file
-                echo file_get_contents( $module[ 'index-file' ] );die;
-                $content    =   eval( file_get_contents( $module[ 'index-file' ] ) );
-                include_once( $module[ 'index-file' ] );
-            } catch( \Throwable $e ) {
-                dd( $e );
-            }
+            // include module index file
+            include_once( $module[ 'index-file' ] );
             
             // run module entry class
             $loadedModule     =   new $module[ 'entry-class' ];
@@ -541,6 +538,36 @@ class Modules
         if ( $module = $this->get( $namespace ) ) {
             // @todo sandbox to test if the module runs
             $enabledModules     =   ( array ) json_decode( $this->options->get( 'enabled_modules' ), true );
+
+            /**
+             * Let's check if that module can be enabled
+             */
+            $code       =   file_get_contents( $module[ 'index-file' ] );
+            $parser     =   ( new ParserFactory )->create( ParserFactory::PREFER_PHP7 );
+
+            try {
+                $attempt  =   $parser->parse( $code );
+            } catch ( Error $error ) {
+                return [
+                    'status'    =>  'failed',
+                    'message'   =>  $error->getMessage(),
+                    'module'    =>  $module
+                ];
+            }
+
+            /**
+             * We're now atempting to trigger the module
+             */
+            try {
+                include_once( $module[ 'index-file' ] );
+                $moduleObject   =   new $module[ 'entry-class' ];
+            } catch( \ErrorException $error ) {
+                return [
+                    'status'    =>  'failed',
+                    'message'   =>  $error->getMessage(),
+                    'module'    =>  $module
+                ];
+            }
 
             // make sure to enable only once
             if ( ! in_array( $namespace, $enabledModules ) ) {

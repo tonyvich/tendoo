@@ -77,13 +77,22 @@ class DashboardController extends Controller
 
         $result     =   $this->modules->enable( $namespace );
 
-        if ( $result[ 'code' ] == 'module_enabled' ) {
+        if ( $result[ 'status' ] == 'success' ) {
             // when the module has been enabled
             Event::fire( 'after.enabling.module', $result[ 'module' ] );
 
             return redirect()->route( 'dashboard.modules.list' )->with([
                 'status'    =>  'success',
                 'message'   =>  sprintf( __( 'The module <strong>%s</strong> has been enabled' ), $result[ 'module' ][ 'name' ] )
+            ]);
+        } else {
+
+            /**
+             * When the module activation throw an error
+             */
+            return redirect()->route( 'dashboard.modules.list' )->with([
+                'status'    =>  'danger',
+                'message'   =>  sprintf( __( 'The module <strong>%s</strong> has been disabled, since it throw that error : <strong>%s</strong>' ), $result[ 'module' ][ 'name' ], $result[ 'message' ] )
             ]);
         }
 
