@@ -15,6 +15,7 @@ class CreateOptionsTable extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer( 'user_id' )->nullable();
             $table->string( 'key' );
             $table->text( 'value' );
             $table->boolean( 'array' ); // this will avoid some option to be saved as options

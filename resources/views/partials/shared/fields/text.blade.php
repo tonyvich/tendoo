@@ -1,4 +1,3 @@
-@if( $field->type  == 'text' )
 <div class="form-group">
     <label for="{{ $field->name }}">{{ $field->label }}</label>
     <input name="{{ $field->name }}" type="text" class="form-control {{ $errors->has( $field->name ) ? 'is-invalid' : '' }}" value="{{ old( $field->name ) ? old( $field->name ) : @$field->value }}" placeholder="{{ @$field->placeholder }}">
@@ -10,4 +9,3 @@
     <small class="form-text text-muted">{{ @$field->description }}</small>
     @endif
 </div>
-@endif

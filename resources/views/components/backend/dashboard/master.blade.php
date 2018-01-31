@@ -6,10 +6,12 @@
             <div class="sidebar-logo align-items-center d-flex justify-content-center">
             Hello World
             </div>
+            <div class="menu-wrapper h-100" data-simplebar>
             @include( 'partials.backend.dashboard.aside', [
                 'menus'     =>  $Menus->get(),
                 'tree'      =>  0
             ])
+            </div>
         </aside>
         <div id="app-body" class="align-items-stretch h-100 flex-column d-flex">
             @include( 'partials.backend.dashboard.navbar' )

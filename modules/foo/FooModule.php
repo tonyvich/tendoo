@@ -8,9 +8,8 @@ class FooModule extends TendooModule
 {
     public function __construct()
     {
-        echo NewClass
         parent::__construct( __FILE__ );
-        echo $error;
+        
         Event::listen( 'dashboard.loaded', 'Modules\Foo\Events\DashboardLoaded@registerMenus' );
         Event::listen( 'before.validating.options', 'Modules\Foo\Events\Options@validationRule' );
         Event::listen( 'before.loading.api', function( $resource ) {

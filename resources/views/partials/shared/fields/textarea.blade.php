@@ -1,4 +1,3 @@
-@if( $field->type  == 'textarea' )
 <div class="form-group">
     <label for="{{ $field->name }}">{{ $field->label }}</label>
     <textarea 
@@ -15,4 +14,3 @@
     <small class="form-text text-muted">{{ @$field->description }}</small>
     @endif
 </div>
-@endif

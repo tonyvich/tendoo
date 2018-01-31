@@ -32,20 +32,12 @@ class MenusConfig
         $users->label           =   10;
         $users->namespace       =   'users';
         $users->icon            =   'people';
-        
-        $security                  =   new \stdClass;
-        $security->text            =   __( 'Security' );
-        $security->href            =   route( 'dashboard.security' );
-        $security->label           =   10;
-        $security->namespace       =   'security';
-        $security->icon            =   'security';
 
         $this->menus            =   $menus;
         $this->menus->add( $dashboard );
         $this->menus->add( $modules );
         $this->menus->add( $settings );
         $this->menus->add( $users );
-        $this->menus->add( $security );
 
         $subSecurity                  =   new \stdClass;
         $subSecurity->text            =   __( 'Sub Security' );
@@ -57,10 +49,21 @@ class MenusConfig
 
         $generalSettings               =   new \stdClass;
         $generalSettings->text         =   __( 'General' );
-        $generalSettings->href         =   route( 'dashboard.settings.general' );
+        $generalSettings->href         =   route( 'dashboard.settings', [
+            'tab'   =>  'general'
+        ]);
         $generalSettings->label        =   10;
         $generalSettings->namespace    =   'settings.general';
 
-        $this->menus->addTo( 'settings', $generalSettings );
+        $registration                   =   new \stdClass;
+        $registration->text             =   __( 'Registration' );
+        $registration->href             =   route( 'dashboard.settings', [
+            'tab'   =>  'registration'
+        ]);
+
+        $registration->label            =   0;
+        $registration->namespace        =   'settings.registration';
+
+        $this->menus->addTo( 'settings', [ $generalSettings, $registration ]);
     }
 }

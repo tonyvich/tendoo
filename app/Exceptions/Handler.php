@@ -55,8 +55,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if( ! config( 'tendoo.debug.errors', false ) ) {
-
+        if( ! config( 'app.debug', false ) ) {
             if ( $request->expectsJson() ) {
 
                 if( $exception instanceof HttpException ) {
@@ -82,9 +81,18 @@ class Handler extends ExceptionHandler
                         'code'      =>  'db-error'
                     ], 401 );
                 }
+
+                if ( $exception instanceof AccessDeniedException ) {
+                    return response()->json([
+                        'status'    =>  'danger',
+                        'message'   =>  $exception->getMessage()
+                    ], 401 );
+                }
             } else {
                 if( $exception instanceof QueryException ) {
                     return response()->view( 'errors.db-error', [ 'e' => $exception ] );
+                } else if ( $exception instanceof AccessDeniedException ) {
+                    return response()->view( 'errors.access-denied', [ 'e' => $exception ] );
                 }
             }
         }

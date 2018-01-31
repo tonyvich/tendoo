@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Menus;
 use App\Services\Dashboard\MenusConfig;
 use App\Services\Options;
+use App\Services\Guard;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,11 @@ class AppServiceProvider extends ServiceProvider
         // save Singleton for options
         $this->app->singleton( Options::class, function(){
             return new Options;
+        });
+        
+        // save Singleton for guard class
+        $this->app->singleton( Guard::class, function(){
+            return new Guard;
         });
 
         require_once app_path() . '\Services\Helper.php';

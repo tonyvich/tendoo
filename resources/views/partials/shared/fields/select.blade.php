@@ -1,4 +1,3 @@
-@if( $field->type  == 'select' )
 <div class="form-group">
 
     <label for="{{ $field->name }}">{{ $field->label }}</label>
@@ -18,4 +17,3 @@
     @endif
 
 </div>
-@endif

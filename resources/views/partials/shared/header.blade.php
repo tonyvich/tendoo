@@ -1,4 +1,5 @@
 @inject( 'Page', 'App\Services\Page' )
+@inject( 'User', 'App\Services\UserOptions' )
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,4 +21,4 @@
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     </script>
 </head>
-<body class="dark-theme">
+<body class="{{ $User->getOption( 'theme_class', 'default-theme' ) }}">

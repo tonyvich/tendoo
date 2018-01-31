@@ -11,17 +11,6 @@ trait SetupFields
     {
         $Fields                 =   [];
 
-        // Application Name
-        $Field  =   new \StdClass;
-        $Field->name            =   'app_name';
-        $Field->type            =   'text';
-        $Field->label           =   __( 'Application Name' );
-        $Field->placeholder     =   __( 'Application Name' );
-        $Field->description     =   __( 'A short name which describe your application.' );
-        $Field->value         =   __( 'Tendoo Application' );
-        $Field->validation      =   'required|min:6';
-        $Fields[]               =   $Field;
-
         // User Name
         $Field  =   new \StdClass;
         $Field->name            =   'username';
@@ -50,6 +39,17 @@ trait SetupFields
         $Field->label           =   __( 'Password' );
         $Field->placeholder     =   __( 'Password' );
         $Field->description     =   __( 'Administrator password.' );
+        $Field->validation      =   'required|min:6';
+        $Fields[]               =   $Field;
+
+        // Application Name
+        $Field  =   new \StdClass;
+        $Field->name            =   'app_name';
+        $Field->type            =   'text';
+        $Field->label           =   __( 'Application Name' );
+        $Field->placeholder     =   __( 'Application Name' );
+        $Field->description     =   __( 'A short name which describe your application.' );
+        $Field->value         =   __( 'Tendoo Application' );
         $Field->validation      =   'required|min:6';
         $Fields[]               =   $Field;
         

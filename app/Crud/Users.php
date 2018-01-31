@@ -86,7 +86,7 @@ class Users extends Crud
      * @param mixed value
      * @return mixed result
      */
-    public function filter_post( $value, $name ) {
+    public function filterPost( $value, $name ) {
         /**
          * bcrypt the password
          */
@@ -102,7 +102,7 @@ class Users extends Crud
      * @param mixed value
      * @return mixed result
      */
-    public function filter_put( $value, $name ) {
+    public function filterPut( $value, $name ) {
         /**
          * bcrypt the password
          */
@@ -117,7 +117,7 @@ class Users extends Crud
      * @param object Request
      * @return void
      */
-    public function validation_rules( $request )
+    public function validationRules( $request )
     {
         /**
          * Retreive the user if here provided
@@ -144,7 +144,7 @@ class Users extends Crud
      * Before Delete
      * @return void
      */
-    public function before_delete( $namespace, $id ) {
+    public function beforeDelete( $namespace, $id ) {
         if ( $namespace == 'system.users' ) {
             /**
              * @todo we might check if the user has the right to delete

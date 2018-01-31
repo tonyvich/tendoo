@@ -1,7 +1,6 @@
-@if( $field->type  == 'md-select' )
 <div id="field-{{ $field->name }}" style="width:100%" class="mdc-select" role="listbox" tabindex="0">
     <div class="mdc-select__surface">
-        <div class="mdc-select__label mdc-select__label--float-above">{{ $field->label }}</div>
+        <div class="mdc-select__label mdc-select__label">{{ $field->label }}</div>
         <div class="mdc-select__selected-text"></div>
         <div class="mdc-select__bottom-line"></div>
     </div>
@@ -50,8 +49,7 @@ jQuery( document ).ready( function(){
         );
     })
 
-    selectFieldComponent.selectedIndex	    =   {{ $selectedIndex }};
+    // selectFieldComponent.selectedIndex	    =   {{ $selectedIndex }};
     $( '[name="{{ $field->name }}"]' ).val( '{{ $selectedValue }}' );
 });
 </script>
-@endif

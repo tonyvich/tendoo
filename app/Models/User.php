@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 // use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserOptions;
 
 class User extends Authenticatable
 {
@@ -32,6 +33,12 @@ class User extends Authenticatable
     ];
 
     /**
+     * Permission for a specific user
+     * @var array
+     */
+    protected static $permissions  =   [];
+
+    /**
      * Relation with roles
      * @return void
     **/
@@ -39,6 +46,93 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo( Role::class );
+    }
+
+    /**
+     * Relation with permissions
+     * @return object
+     */
+    public static function permissions( $user_id = null )
+    {
+        /**
+         * If user id is not provided
+         */
+        if ( $user_id == null ) {
+            $user_id    =   Auth::user()->role_id;
+        } 
+
+        if ( empty( @self::$permissions[ $user_id ] ) ) {
+
+            $rawPermissions   =   Role::find( $user_id )->permissions;
+
+            /**
+             * if the permissions hasn't yet been cached
+             */
+            
+            // start caching the user permissions
+            self::$permissions[ $user_id ]    =   [];
+    
+            /**
+             * if there is a rawPermission available
+             */
+            if ( $rawPermissions->count() ) {
+                foreach ( $rawPermissions as $permission ) {
+                    self::$permissions[ $user_id ][]  =   $permission->namespace;
+                }
+            }
+        }
+
+        return self::$permissions[ $user_id ];
+    }
+
+    /**
+     * Check if a user can perform an action
+     */
+    public static function allowedTo( $action )
+    {
+        if ( ! is_array( $action ) ) {
+            // check if there is a wildcard on the permission request
+            $partials       =   explode( '.', $action );
+
+            if ( $partials[0] == '*' ) {
+
+                $collection     =   collect( self::permissions() );
+
+                /**
+                 * Getting all defined permission 
+                 * instead of harcoding it
+                 */
+                $permissions    =   $collection->filter( function( $value, $key ) use( $partials ) {
+                    return substr( $value, -strlen( $partials[1] ) ) === $partials[1];
+                });
+
+                return self::allowedTo( $permissions->toArray() );
+            }
+
+            /**
+             * We assume the search is not an array but a string. We
+             * can then perform a search
+             */
+            if ( in_array( $action, self::permissions() ) ) {
+                return true;
+            }
+            return false;
+
+        } else {
+
+            /**
+             * While looing, if one permission is not granted, exit the loop and return false
+             */
+            if( $action ) {
+                foreach ( $action as $_permission ) {
+                    if ( ! self::allowedTo( $_permission ) ) {
+                        return false;
+                    }
+                }    
+                return true;
+            }
+            return false;
+        }
     }
 
     /**

@@ -1,33 +1,33 @@
 @keyframes closeAside {
     0% {
         left: 0px;
-        width: 250px;
+        width: 280px;
     }  
     100% {
-        left:-250px;
+        left:-280px;
         width: 0px;
     } 
 }
 @keyframes openAside {
     0% {
-        left: -250px;
+        left: -280px;
         width: 0px;
     }  
     100% {
         left:0px;
-        width: 250px;
+        width: 280px;
     } 
 }
 .collapsed-aside aside#sidebar-menu {
     animation-name: closeAside;
     animation-duration: 0.2s;
     width: 0px;
-    left:-250px;
+    left:-280px;
 }
 .expanded-aside aside#sidebar-menu {
     animation-name: openAside;
     animation-duration: 0.2s;
-    width: 250px;
+    width: 280px;
     left:  0px;
 }
 
@@ -82,14 +82,14 @@
 }
 
 #sidebar-menu .sidebar-logo {
-    height: 51px;
+    height: 58px;
 }
 aside#sidebar-menu {
-    width: 250px;
+    width: 280px;
     left:   0px;
 }
 
-aside#sidebar-menu>ul .list-group-item > a {
+aside#sidebar-menu .menu-wrapper ul .list-group-item > a {
     width: 100%;
     margin:0px;
     padding: 0.8rem;
@@ -99,12 +99,15 @@ aside#sidebar-menu>ul .list-group-item > a {
 aside#sidebar-menu {
     box-shadow: 0px 0px 5px 0px #333;
     position: relative;
-    width: 250px;
+    width: 280px;
 }
-aside#sidebar-menu>ul .list-group-item:hover {
+aside .list-group {
+    display:block;
+}
+aside#sidebar-menu .menu-wrapper ul .list-group-item:hover {
     background: rgba(255, 255, 255, 0.1);
 }
-aside#sidebar-menu>ul .list-group-item:hover a {
+aside#sidebar-menu .menu-wrapper ul .list-group-item:hover a {
     text-decoration: none;
 }
 
@@ -185,4 +188,11 @@ table.table .checkbox label .checkbox-decorator, table.table label.checkbox-inli
 .card-header button.btn.btn-raised {
     margin-bottom: 0px;
     height: 37px;
+}
+
+/**
+ * Utilities
+**/
+.menu-wrapper {
+    overflow-y: auto;
 }

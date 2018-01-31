@@ -127,4 +127,5 @@ function generate_timezone_list()
 function route_field()
 {
 	echo '<input type="hidden" name="_route" value="' . Route::currentRouteName() . '">';
+	echo '<input type="hidden" name="_previous" value="' . url()->current() . '">';
 }

@@ -5,33 +5,57 @@ use App\Services\Fields\SetupFields;
 use App\Services\Fields\AuthFields;
 use App\Services\Fields\GeneralSettingsFields;
 use App\Services\Fields\UsersFields;
+use App\Services\Fields\ProfileFields;
 
 class Field
 {
     use SetupFields,
         AuthFields,
         GeneralSettingsFields,
-        UsersFields;
+        UsersFields,
+        ProfileFields;
 
     /**
      * Build Self for validation
      * Accept Trait method name which must return an array of fields
      * @return array
      */
-    static function buildValidation( string $method )
+    static function buildValidation( $method )
     {
-        $fields     =   self::$method();
-        $validation     =   [];
-        if ( $fields ) {
-            foreach( self::$method() as $field ) {
-                // if field provide validation
-                if ( @$field->validation ) {
-                    $validation[ $field->name ]     =   $field->validation;
+        /**
+         * check if we're submitting various field methods
+         */
+        if ( is_array( $method ) ) {
+            $final      =   [];
+
+            /**
+             * Lopping all methods to build the validation array
+             */
+            foreach ( $method as $_method ) {
+                if ( $validation =  self::buildValidation( $_method ) ) {
+                    $final    =   array_merge( $final, $validation );
                 }
             }
-        }
 
-        return $validation;
+            return $final;
+        } else {
+
+            /**
+             * We're here dealing with string only
+             */
+            $fields         =   self::$method();
+            $validation     =   [];
+            if ( $fields ) {
+                foreach( self::$method() as $field ) {
+                    // if field provide validation
+                    if ( @$field->validation ) {
+                        $validation[ $field->name ]     =   $field->validation;
+                    }
+                }
+            }
+    
+            return $validation;
+        }
     }
 
     /**

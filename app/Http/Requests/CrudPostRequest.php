@@ -31,7 +31,7 @@ class CrudPostRequest extends FormRequest
         $resource   =   @Event::fire( 'define.crud' )[0];
 
         if ( is_object( $resource ) ) {
-            return $resource->validation_rules( $this );      
+            return $resource->validationRules( $this );      
         }
 
         // if a resource is not defined. Let's return an empty array.

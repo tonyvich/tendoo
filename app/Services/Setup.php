@@ -198,6 +198,13 @@ class Setup
         $this->permission->namespace        =   'update.core';
         $this->permission->description      =   __( 'Can update core' );
         $this->permission->save();
+        
+        // for module migration
+        $this->permission                   =   new Permission;
+        $this->permission->name             =   __( 'Manage Modules' );
+        $this->permission->namespace        =   'manage.modules';
+        $this->permission->description      =   __( 'Can manage module : install, delete, update, migrate, enable, disable' );
+        $this->permission->save();
     }
 
     /**
@@ -236,7 +243,8 @@ class Setup
             'enable.modules',
             'disable.modules',
             'update.modules',
-            'delete.modules' 
+            'delete.modules',
+            'migrate.modules' 
         ]);
 
         Role::AddPermissions( 'supervisor', [ 

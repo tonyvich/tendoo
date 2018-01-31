@@ -1,4 +1,3 @@
-@if( $field->type  == 'checkbox' )
 <label for="{{ $field->name }}">{{ @$field->label }}</label>
 <div class="checkbox">
     @foreach( $field->options as $value => $text )
@@ -18,4 +17,3 @@
     <br>
 </div>
 <input name="_checkbox[]" value="{{ $field->name }}" type="hidden"/>
-@endif

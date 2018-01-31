@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
     //
-    public static function key( $key )
+    public function scopeKey( $query, $key )
     {
-        return self::where( 'key', $key )->first();
+        return $query->where( 'key', $key )->first();
     }
 
     /**
@@ -18,8 +18,8 @@ class Option extends Model
      * @return array
     **/
 
-    public static function Allkeys( $key )
+    public function scopeAllkeys( $query, $key )
     {
-        return self::where( 'key', $key )->get();
+        return $query->where( 'key', $key )->get();
     }
 }

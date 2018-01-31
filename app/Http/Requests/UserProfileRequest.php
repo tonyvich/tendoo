@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Event;
+use App\Services\Field;
 
-class CrudPutRequest extends FormRequest
+class UserProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +25,11 @@ class CrudPutRequest extends FormRequest
      */
     public function rules()
     {
+        Event::Fire( 'before.validating.user-profile', $this );
+
         /**
-         * get resource defined
+         * implemented to support multiple field on differents tabs
          */
-        $resource   =   @Event::fire( 'define.crud' )[0];
-
-        if ( is_object( $resource ) ) {
-            return $resource->validationRules( $this );      
-        }
-
-        // if a resource is not defined. Let's return an empty array.
-        return [];
+        return Field::buildValidation([ 'userSecurityFields', 'userGeneralFields' ]);
     }
 }

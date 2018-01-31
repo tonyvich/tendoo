@@ -39,8 +39,8 @@ class OptionSet extends Command
     public function handle()
     {
         $this->options  =   app()->make( Options::class );
-        $key        =   $this->argument( 'key' );
-        $value      =   $this->option( 'v' );
+        $key            =   $this->argument( 'key' );
+        $value          =   $this->option( 'v' );
         if ( empty( $value ) ) {
             return $this->error( 'value must be defined !' );
         }
